@@ -1,6 +1,8 @@
 import { useState, useContext, RefObject } from 'react';
 import { joinContext } from 'context/joinContext';
 
+import io from 'socket.io-client';
+
 const useValidationInputs = (
   inputUsername: RefObject<HTMLInputElement>,
   inputRoom: RefObject<HTMLInputElement>,
@@ -11,6 +13,15 @@ const useValidationInputs = (
   const [isPassed, setIsPassed] = useState(false);
 
   const { setRoom, setUsername } = useContext(joinContext);
+
+  const runSocket = (name: string, room: string) => {
+    const socket = io('localhost:5500');
+    socket.emit('join', { name, room }, (error: any) => {
+      if (error) {
+        alert(error);
+      }
+    });
+  };
 
   const validationInputs = () => {
     if (inputUsername.current && inputRoom.current) {
@@ -34,6 +45,8 @@ const useValidationInputs = (
       setUsername(inputUsernameValue);
       setRoom(inputRoomvalue);
       setIsPassed(true);
+
+      runSocket(inputUsernameValue, inputRoomvalue);
     }
   };
 
