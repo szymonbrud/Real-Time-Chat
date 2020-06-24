@@ -4,6 +4,7 @@ import GlobalStyleProvider from 'assets/styles/globalStyles';
 
 import { JoinContextProvider } from 'context/joinContext';
 import LoginPage from 'pages/LoginPage';
+import ChatPage from 'pages/ChatPage';
 
 const App = () => (
   <GlobalStyleProvider>
@@ -11,7 +12,7 @@ const App = () => (
       <Router>
         <Switch>
           <Route exact path="/" component={LoginPage} />
-          <Route path="/room" />
+          <Route path="/room" component={ChatPage} />
         </Switch>
       </Router>
     </JoinContextProvider>

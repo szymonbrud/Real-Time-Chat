@@ -16,7 +16,7 @@ const LoginPage = () => {
   );
 
   if (isPassed) {
-    // return <Redirect to="/room"/>
+    return <Redirect to="/room" />;
   }
 
   return (
