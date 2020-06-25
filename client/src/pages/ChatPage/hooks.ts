@@ -10,7 +10,13 @@ interface messageObject {
 }
 
 let socket: any;
-const URL = 'localhost:5500';
+let URL: string;
+
+if (window.location.hostname === 'localhost') {
+  URL = 'http://localhost:5500/';
+} else {
+  URL = 'https://real-time-chat-backend.herokuapp.com/';
+}
 
 const useChatConnection = () => {
   const { username, room } = useContext(joinContext);

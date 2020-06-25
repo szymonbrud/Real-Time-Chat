@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   console.log('reg')
-  res.send({ response: "Server is up and running." }).status(200);
+  res.send("Server is up and running.").status(200);
 });
 
 export default router;

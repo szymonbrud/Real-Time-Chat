@@ -7,7 +7,7 @@ import router from './router';
 
 import { createUser, getUser, removeUser } from './users'
 
-const whitelist = ['http://localhost:3000', 'http://localhost:5500', "[::1]:5500"];
+const whitelist = ['http://localhost:3000', 'https://real-time-chat-szymonqqaz.netlify.app/'];
 const corsOptions = {
   credentials: true,
   origin: (origin, callback) => {
@@ -58,4 +58,4 @@ io.on('connect', socket => {
   })
 })
 
-server.listen(5500, () => console.log('Bakcend working on 5500'));
+server.listen(process.env.PORT || 5500, () => console.log(`Server has started.`));
