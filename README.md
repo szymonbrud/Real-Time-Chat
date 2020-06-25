@@ -5,7 +5,7 @@ I've been starting a learning node and I wanted to create something.
 
 #### technologies
 
-##### fornt end
+##### front end
 - typescript
 - react
 - styled-components
