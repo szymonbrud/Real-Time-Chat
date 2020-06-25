@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from 'styled-components';
 
-const anim = keyframes`
+const messageAnimationRight = keyframes`
   from {
     transform: translateX(100%);
   }
@@ -10,7 +10,7 @@ const anim = keyframes`
   }
 `;
 
-const anim2 = keyframes`
+const messageAnimationLeft = keyframes`
   from {
     transform: translateX(-100%);
   }
@@ -29,11 +29,26 @@ export const MainWrapper = styled.section`
   justify-content: center;
 `;
 
-export const MessagesMainWrapper = styled.div``;
+export const MessagesMainWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  @media (min-width: 865px) {
+    display: block;
+    width: auto;
+  }
+`;
 
 export const MessagesWrapper = styled.div`
-  width: 445px;
-  height: 431px;
+  width: 100%;
+  height: 85vh;
+
+  @media (min-width: 865px) {
+    width: 445px;
+    height: 431px;
+  }
+
   background: white;
   border-radius: 6px;
   margin-bottom: 31px;
@@ -48,10 +63,18 @@ export const MessagesWrapper = styled.div`
 
 export const SenderWrapper = styled.div`
   display: flex;
+  justify-content: center;
 `;
 
 export const MessageSenderInput = styled.input`
-  width: 370px;
+  width: 74%;
+  margin-bottom: 20px;
+
+  @media (min-width: 865px) {
+    width: 370px;
+    height: 49px;
+  }
+
   height: 49px;
   border-radius: 5px;
   border: ${({ theme }) => theme.colors.blue} 2px solid;
@@ -97,7 +120,7 @@ export const Message = styled.div`
   ${({ isRight, username }: { isRight?: boolean; username: string }) =>
     !isRight
       ? css`
-          animation: ${anim} 0.2s linear;
+          animation: ${messageAnimationRight} 0.2s linear;
           animation-timing-function: cubic-bezier(0.9, 0.23, 0.11, 1.84);
           align-self: flex-end;
           background: ${({ theme }) => theme.colors.background};
@@ -111,7 +134,7 @@ export const Message = styled.div`
           }
         `
       : css`
-          animation: ${anim2} 0.2s linear;
+          animation: ${messageAnimationLeft} 0.2s linear;
           animation-timing-function: cubic-bezier(0.9, 0.23, 0.11, 1.84);
           align-self: flex-start;
           background: ${({ theme }) => theme.colors.blue};

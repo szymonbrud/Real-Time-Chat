@@ -3,7 +3,7 @@ import { render, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router, Switch } from 'react-router-dom';
 
 import GlobalStyleProvider from 'assets/styles/globalStyles';
-import { JoinContextProvider, setUsername } from 'context/joinContext';
+import { JoinContextProvider, setUsernameAndRoom } from 'context/joinContext';
 
 import LoginPage from './index';
 
@@ -39,7 +39,7 @@ describe('Are input correctly completed', () => {
     fireEvent.click(getByText('gotowe'));
 
     expect(queryByText('Błąd!')).toBeNull();
-    expect(setUsername.mock.calls.length).toBe(1);
+    expect(setUsernameAndRoom.mock.calls.length).toBe(1);
   });
 
   it('After click buttonw when inputs are NOT corrently should NOT call function', () => {
@@ -55,7 +55,7 @@ describe('Are input correctly completed', () => {
     fireEvent.click(getByText('gotowe'));
 
     expect(getByText('Błąd!')).toBeDefined();
-    expect(setUsername.mock.calls.length).toBe(0);
+    expect(setUsernameAndRoom.mock.calls.length).toBe(0);
 
     fireEvent.change(getByPlaceholderText('nazwa'), { target: { value: 'marcin' } });
     fireEvent.change(getByPlaceholderText('pokój'), { target: { value: '' } });
@@ -63,13 +63,13 @@ describe('Are input correctly completed', () => {
     fireEvent.click(getByText('gotowe'));
 
     expect(getByText('Błąd!')).toBeDefined();
-    expect(setUsername.mock.calls.length).toBe(0);
+    expect(setUsernameAndRoom.mock.calls.length).toBe(0);
 
     fireEvent.change(getByPlaceholderText('nazwa'), { target: { value: '' } });
     fireEvent.change(getByPlaceholderText('pokój'), { target: { value: '' } });
 
     fireEvent.click(getByText('gotowe'));
 
-    expect(setUsername.mock.calls.length).toBe(0);
+    expect(setUsernameAndRoom.mock.calls.length).toBe(0);
   });
 });

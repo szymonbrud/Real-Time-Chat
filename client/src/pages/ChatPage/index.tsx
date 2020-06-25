@@ -1,12 +1,9 @@
 import React from 'react';
-
-import useChatConnection from './hooks';
+import { Redirect } from 'react-router-dom';
 import { SendRounded } from '@material-ui/icons';
 import { grey } from '@material-ui/core/colors';
-import { Redirect } from 'react-router-dom';
 
-import gsap from 'gsap';
-
+import useChatConnection from './hooks';
 import {
   MainWrapper,
   MessageSenderInput,
@@ -18,28 +15,14 @@ import {
 } from './styles';
 
 const ChatPage = () => {
-  const { messages, textInputRef, sendMessage, triggerSend, isRedirect } = useChatConnection();
-
-  const refDiv: React.RefObject<HTMLDivElement> = React.useRef(null);
-
-  const refMessage: React.RefObject<HTMLDivElement> = React.useRef(null);
-
-  React.useEffect(() => {
-    if (refDiv.current) {
-      refDiv.current.scrollTop = refDiv.current.scrollHeight;
-    }
-
-    // gsap.fromTo(
-    //   refMessage.current,
-    //   {
-    //     x: 100,
-    //   },
-    //   {
-    //     x: 0,
-    //     duration: 0.3,
-    //   },
-    // );
-  }, [messages]);
+  const {
+    messages,
+    textInputRef,
+    sendMessage,
+    triggerSend,
+    isRedirect,
+    messageWrapperRef,
+  } = useChatConnection();
 
   if (isRedirect) {
     return <Redirect to="/" />;
@@ -48,15 +31,11 @@ const ChatPage = () => {
   return (
     <MainWrapper>
       <MessagesMainWrapper>
-        <MessagesWrapper ref={refDiv}>
+        <MessagesWrapper ref={messageWrapperRef}>
           {messages.map(({ isReceived, sender, text }, index) => {
             console.log(messages.length, index);
             return (
-              <Message
-                isRight={isReceived}
-                username={sender}
-                ref={messages.length === index + 1 ? refMessage : null}
-              >
+              <Message isRight={isReceived} username={sender}>
                 {text}
               </Message>
             );
@@ -64,7 +43,7 @@ const ChatPage = () => {
         </MessagesWrapper>
         <SenderWrapper>
           <MessageSenderInput
-            placeholder="write somethink..."
+            placeholder="napisz coś..."
             ref={textInputRef}
             onKeyUp={(e) => triggerSend(e)}
           />

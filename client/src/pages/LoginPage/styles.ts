@@ -13,7 +13,7 @@ export const Background = styled.section`
 export const Text = styled.p`
   font-size: 30px;
   text-align: center;
-  font-family: 'Roboto Mono', monospace;
+  font-family: ${({ theme }) => theme.fonts.mono};
   font-weight: 600;
   margin: 0 0 100px;
 `;

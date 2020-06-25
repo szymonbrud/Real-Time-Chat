@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import LoginInput from 'components/LoginInput';
 
 import useValidationInputs from './hooks';
 import { Background, Text, AcceptButton } from './styles';
-import { Redirect } from 'react-router-dom';
 
 const LoginPage = () => {
   const inputUsername = useRef<HTMLInputElement>(null);

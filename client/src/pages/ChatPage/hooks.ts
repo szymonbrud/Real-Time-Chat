@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState, useRef, RefObject } from 'react';
-import io, { Socket } from 'socket.io-client';
+import io from 'socket.io-client';
 
 import { joinContext } from 'context/joinContext';
 
@@ -10,16 +10,16 @@ interface messageObject {
 }
 
 let socket: any;
+const URL = 'localhost:5500';
 
 const useChatConnection = () => {
   const { username, room } = useContext(joinContext);
 
   const textInputRef: RefObject<HTMLInputElement> = useRef(null);
+  const messageWrapperRef: RefObject<HTMLDivElement> = useRef(null);
 
   const [messages, setMessages] = useState<messageObject[]>([]);
   const [isRedirect, setIsRedirect] = useState(false);
-
-  const URL = 'localhost:5500';
 
   useEffect(() => {
     if (username === '' || room === '') setIsRedirect(true);
@@ -57,7 +57,13 @@ const useChatConnection = () => {
     }
   };
 
-  return { messages, textInputRef, sendMessage, triggerSend, isRedirect };
+  useEffect(() => {
+    if (messageWrapperRef.current) {
+      messageWrapperRef.current.scrollTop = messageWrapperRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  return { messages, textInputRef, sendMessage, triggerSend, isRedirect, messageWrapperRef };
 };
 
 export default useChatConnection;

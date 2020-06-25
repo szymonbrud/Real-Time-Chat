@@ -26,12 +26,7 @@ app.use(cors(corsOptions));
 app.use(router);
 
 io.on('connect', socket => {
-  console.log('we have a new connection')
   socket.on('join', ({name, room}, callback) => {
-    console.log(`User: ${name} join`);
-    console.log(room);
-    console.log(socket.id);
-
     const {error, user} = createUser(socket.id, name, room);
 
     if(error){
@@ -40,7 +35,7 @@ io.on('connect', socket => {
 
     socket.join(user.room);
 
-    socket.emit('message', {user: "admin", text: `${user.username}, welcome to room ${user.room}`});
+    socket.emit('message', {user: "admin", text: `${user.username}, witaj w pokoju: ${user.room}`});
     socket.to(user.room).emit('message', {user: 'admin', text: `${user.username} has joined!`});
 
     callback();
@@ -55,12 +50,10 @@ io.on('connect', socket => {
   })
 
   socket.on('disconnect', () => {
-    console.log('user had left!!');
     const user = removeUser(socket.id);
     
     if(user) {
-      io.to(user.room).emit('message', { user: 'Admin', text: `${user.username} has left.` });
-      // io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+      io.to(user.room).emit('message', { user: 'Admin', text: `${user.username}, wyszedł.` });
     }
   })
 })
