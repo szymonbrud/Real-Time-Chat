@@ -16,13 +16,10 @@ export const getUser = id => users.find(user => user.id === id);
 export const removeUser = id => {
   const userIndexToRemote = users.findIndex(user => user.id === id);
   const userSave = users[userIndexToRemote];
-  console.log(users[userIndexToRemote])
   if(userIndexToRemote !== -1){
-    console.log(userSave)
-
     users.splice(userIndexToRemote, 1)[0];
-    console.log(userSave)
-
     return userSave;
   } 
 }
+
+export const getOnlineUsers = room => users.filter(user => user.room === room).map(user => user.username);

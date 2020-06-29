@@ -4,8 +4,7 @@ import socketio from 'socket.io';
 import cors from 'cors';
 
 import router from './router';
-
-import { createUser, getUser, removeUser } from './users'
+import { createUser, getUser, removeUser, getOnlineUsers } from './users';
 
 const whitelist = ['http://localhost:3000', 'https://real-time-chat-szymonqqaz.netlify.app/'];
 const corsOptions = {
@@ -35,8 +34,11 @@ io.on('connect', socket => {
 
     socket.join(user.room);
 
+    const onlineUsers = getOnlineUsers(user.room);
+
     socket.emit('message', {user: "admin", text: `${user.username}, witaj w pokoju: ${user.room}`});
     socket.to(user.room).emit('message', {user: 'admin', text: `${user.username} has joined!`});
+    io.in(user.room).emit('onlineUsers', {onlineUsers});
 
     callback();
   });
@@ -51,9 +53,11 @@ io.on('connect', socket => {
 
   socket.on('disconnect', () => {
     const user = removeUser(socket.id);
+    const onlineUsers = getOnlineUsers(user.room);
     
     if(user) {
       io.to(user.room).emit('message', { user: 'Admin', text: `${user.username}, wyszedł.` });
+      io.in(user.room).emit('onlineUsers', {onlineUsers});
     }
   })
 })

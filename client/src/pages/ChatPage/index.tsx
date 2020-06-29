@@ -3,6 +3,9 @@ import { Redirect } from 'react-router-dom';
 import { SendRounded } from '@material-ui/icons';
 import { grey } from '@material-ui/core/colors';
 
+import OnlineUsersfrom from 'components/OnlineUsers';
+import LeaveButton from 'components/LeaveButton';
+
 import useChatConnection from './hooks';
 import {
   MainWrapper,
@@ -22,6 +25,8 @@ const ChatPage = () => {
     triggerSend,
     isRedirect,
     messageWrapperRef,
+    diconnect,
+    onlineUsers,
   } = useChatConnection();
 
   if (isRedirect) {
@@ -33,9 +38,8 @@ const ChatPage = () => {
       <MessagesMainWrapper>
         <MessagesWrapper ref={messageWrapperRef}>
           {messages.map(({ isReceived, sender, text }, index) => {
-            console.log(messages.length, index);
             return (
-              <Message isRight={isReceived} username={sender}>
+              <Message isRight={isReceived} username={sender} key={text}>
                 {text}
               </Message>
             );
@@ -52,6 +56,8 @@ const ChatPage = () => {
           </SendButton>
         </SenderWrapper>
       </MessagesMainWrapper>
+      <OnlineUsersfrom onlineUsers={onlineUsers} />
+      <LeaveButton diconnect={diconnect} />
     </MainWrapper>
   );
 };

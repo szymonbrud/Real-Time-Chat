@@ -26,6 +26,7 @@ const useChatConnection = () => {
 
   const [messages, setMessages] = useState<messageObject[]>([]);
   const [isRedirect, setIsRedirect] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
     if (username === '' || room === '') setIsRedirect(true);
@@ -40,6 +41,10 @@ const useChatConnection = () => {
 
     socket.on('message', ({ user, text }: { user: string; text: string }) => {
       setMessages((message) => [...message, { isReceived: true, sender: user, text }]);
+    });
+
+    socket.on('onlineUsers', ({ onlineUsers }: { onlineUsers: string[] }) => {
+      setOnlineUsers(onlineUsers);
     });
   }, []);
 
@@ -57,6 +62,10 @@ const useChatConnection = () => {
     }
   };
 
+  const diconnect = () => {
+    socket.close();
+  };
+
   const triggerSend = (e: any) => {
     if (e.keyCode === 13) {
       sendMessage();
@@ -69,7 +78,16 @@ const useChatConnection = () => {
     }
   }, [messages]);
 
-  return { messages, textInputRef, sendMessage, triggerSend, isRedirect, messageWrapperRef };
+  return {
+    messages,
+    textInputRef,
+    sendMessage,
+    triggerSend,
+    isRedirect,
+    messageWrapperRef,
+    diconnect,
+    onlineUsers,
+  };
 };
 
 export default useChatConnection;
