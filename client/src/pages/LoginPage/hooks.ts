@@ -10,7 +10,7 @@ const useAuthentication = () => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         setIsUserLogin('login');
-        console.log(user);
+        console.log(user.getIdToken());
       } else {
         setIsUserLogin('not');
       }

@@ -3,6 +3,8 @@ import http from 'http'
 import socketio from 'socket.io';
 import cors from 'cors';
 
+import fs from 'fs'
+
 import router from './router';
 import { createUser, getUser, removeUser, getOnlineUsers } from './users';
 
@@ -18,10 +20,13 @@ const corsOptions = {
 }
 
 const app = express();
+
 const server = http.createServer(app);
+
 const io = socketio(server);
 
 app.use(cors(corsOptions));
+// app.use(cors());
 app.use(router);
 
 io.on('connect', socket => {

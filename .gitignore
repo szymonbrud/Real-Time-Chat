@@ -3,3 +3,5 @@ node_modules
 .netlify
 build
 .env
+server/firebaseConfig.js
+server/service-account-file.json
