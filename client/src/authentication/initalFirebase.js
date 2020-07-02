@@ -16,7 +16,7 @@ const useInitialFirebase = () => {
       messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
       appId: process.env.REACT_APP_APP_ID,
     };
-    firebase.initializeApp(firebaseConfig);
+    !firebase.apps.length && firebase.initializeApp(firebaseConfig);
   };
 };
 

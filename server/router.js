@@ -33,5 +33,3 @@ router.get("/check", (req, res) => {
 
 
 export default router;
-
-// $env:GOOGLE_APPLICATION_CREDENTIALS="C:\Users\Szymon\Desktop\Real-Time-Chat\server\service-account-file.json"

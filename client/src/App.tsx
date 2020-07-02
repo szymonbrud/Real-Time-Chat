@@ -6,17 +6,22 @@ import { JoinContextProvider } from 'context/joinContext';
 import LoginPage from 'pages/LoginPage';
 import ChatPage from 'pages/ChatPage';
 
-const App = () => (
-  <GlobalStyleProvider>
-    <JoinContextProvider>
-      <Router>
-        <Switch>
-          <Route exact path="/" component={LoginPage} />
-          <Route path="/room" component={ChatPage} />
-        </Switch>
-      </Router>
-    </JoinContextProvider>
-  </GlobalStyleProvider>
-);
+import PrivateRoute from 'authentication/PrivateRoute';
+import CheckRoute from 'helpers/CheckRoute';
+
+const App = () => {
+  return (
+    <GlobalStyleProvider>
+      <JoinContextProvider>
+        <Router>
+          <Switch>
+            <CheckRoute exact path="/" component={LoginPage} />
+            <PrivateRoute path="/room" component={ChatPage} />
+          </Switch>
+        </Router>
+      </JoinContextProvider>
+    </GlobalStyleProvider>
+  );
+};
 
 export default App;

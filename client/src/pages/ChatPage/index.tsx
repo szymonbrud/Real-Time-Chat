@@ -6,6 +6,8 @@ import { grey } from '@material-ui/core/colors';
 import OnlineUsersfrom from 'components/OnlineUsers';
 import LeaveButton from 'components/LeaveButton';
 
+import useAuthentication from 'authentication/authenticationHooks';
+
 import useChatConnection from './hooks';
 import {
   MainWrapper,
@@ -29,37 +31,46 @@ const ChatPage = () => {
     onlineUsers,
   } = useChatConnection();
 
-  if (isRedirect) {
-    return <Redirect to="/" />;
-  }
+  const { logout } = useAuthentication();
 
   return (
-    <MainWrapper>
-      <MessagesMainWrapper>
-        <MessagesWrapper ref={messageWrapperRef}>
-          {messages.map(({ isReceived, sender, text }, index) => {
-            return (
-              <Message isRight={isReceived} username={sender} key={text}>
-                {text}
-              </Message>
-            );
-          })}
-        </MessagesWrapper>
-        <SenderWrapper>
-          <MessageSenderInput
-            placeholder="napisz coś..."
-            ref={textInputRef}
-            onKeyUp={(e) => triggerSend(e)}
-          />
-          <SendButton onClick={sendMessage}>
-            <SendRounded style={{ fontSize: 24, color: grey[50], marginLeft: 1 }} />
-          </SendButton>
-        </SenderWrapper>
-      </MessagesMainWrapper>
-      <OnlineUsersfrom onlineUsers={onlineUsers} />
-      <LeaveButton diconnect={diconnect} />
-    </MainWrapper>
+    <>
+      <h1>hello I am chat page</h1>
+      <button onClick={logout}>logout</button>
+    </>
   );
+
+  // if (isRedirect) {
+  //   return <Redirect to="/" />;
+  // }
+
+  // return (
+  //   <MainWrapper>
+  //     <MessagesMainWrapper>
+  //       <MessagesWrapper ref={messageWrapperRef}>
+  //         {messages.map(({ isReceived, sender, text }, index) => {
+  //           return (
+  //             <Message isRight={isReceived} username={sender} key={text}>
+  //               {text}
+  //             </Message>
+  //           );
+  //         })}
+  //       </MessagesWrapper>
+  //       <SenderWrapper>
+  //         <MessageSenderInput
+  //           placeholder="napisz coś..."
+  //           ref={textInputRef}
+  //           onKeyUp={e => triggerSend(e)}
+  //         />
+  //         <SendButton onClick={sendMessage}>
+  //           <SendRounded style={{ fontSize: 24, color: grey[50], marginLeft: 1 }} />
+  //         </SendButton>
+  //       </SenderWrapper>
+  //     </MessagesMainWrapper>
+  //     <OnlineUsersfrom onlineUsers={onlineUsers} />
+  //     <LeaveButton diconnect={diconnect} />
+  //   </MainWrapper>
+  // );
 };
 
 export default ChatPage;
