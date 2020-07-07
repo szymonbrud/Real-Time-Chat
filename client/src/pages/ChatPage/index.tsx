@@ -6,6 +6,8 @@ import { grey } from '@material-ui/core/colors';
 import OnlineUsersfrom from 'components/OnlineUsers';
 import LeaveButton from 'components/LeaveButton';
 
+import firebase from 'firebase';
+
 import useAuthentication from 'authentication/authenticationHooks';
 
 import useChatConnection from './hooks';
@@ -19,19 +21,50 @@ import {
   Message,
 } from './styles';
 
+import io from 'socket.io-client';
+
+let URL: string;
+let socket: any;
+
+if (window.location.hostname === 'localhost') {
+  URL = 'http://localhost:5500/';
+} else {
+  URL = 'https://real-time-chat-backend.herokuapp.com/';
+}
+
 const ChatPage = () => {
-  const {
-    messages,
-    textInputRef,
-    sendMessage,
-    triggerSend,
-    isRedirect,
-    messageWrapperRef,
-    diconnect,
-    onlineUsers,
-  } = useChatConnection();
+  // const {
+  //   messages,
+  //   textInputRef,
+  //   sendMessage,
+  //   triggerSend,
+  //   isRedirect,
+  //   messageWrapperRef,
+  //   diconnect,
+  //   onlineUsers,
+  // } = useChatConnection();
+  const [userTokenId, setUserTokenId] = React.useState('');
 
   const { logout } = useAuthentication();
+
+  React.useEffect(() => {
+    firebase
+      .auth()
+      .currentUser?.getIdToken()
+      .then(token => {
+        setUserTokenId(token);
+        joinSocket(token);
+      });
+
+    const joinSocket = (token: string) => {
+      socket = io(URL);
+      socket.emit('join', { userTokenId: token }, (error: any) => {
+        if (error) {
+          alert(error);
+        }
+      });
+    };
+  }, []);
 
   return (
     <>

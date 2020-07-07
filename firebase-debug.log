@@ -1,0 +1,26 @@
+[debug] [2020-07-02T11:32:58.744Z] ----------------------------------------------------------------------
+[debug] [2020-07-02T11:32:58.746Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Szymon\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start --only database
+[debug] [2020-07-02T11:32:58.746Z] CLI Version:   8.2.0
+[debug] [2020-07-02T11:32:58.746Z] Platform:      win32
+[debug] [2020-07-02T11:32:58.747Z] Node Version:  v13.3.0
+[debug] [2020-07-02T11:32:58.747Z] Time:          Thu Jul 02 2020 13:32:58 GMT+0200 (czas środkowoeuropejski letni)
+[debug] [2020-07-02T11:32:58.748Z] ----------------------------------------------------------------------
+[debug] [2020-07-02T11:32:58.748Z] 
+[debug] [2020-07-02T11:32:58.754Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-07-02T11:32:58.754Z] > authorizing via signed-in user
+[info] i  emulators: Starting emulators: database
+[debug] [2020-07-02T11:33:00.790Z] [hub] writing locator at C:\Users\Szymon\AppData\Local\Temp\hub-testmakemorefocus.json
+[info] +  hub: emulator hub started at http://localhost:4400
+[warn] !  database: Did not find a Realtime Database rules file specified in a firebase.json config file.
+[warn] !  database: The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration.
+[debug] [2020-07-02T11:33:02.798Z] Ignoring unsupported arg: projectId
+[debug] [2020-07-02T11:33:02.798Z] Ignoring unsupported arg: auto_download
+[debug] [2020-07-02T11:33:02.798Z] Starting database emulator with command {"binary":"java","args":["-Duser.language=en","-jar","C:\\Users\\Szymon\\.cache\\firebase\\emulators\\firebase-database-emulator-v4.4.1.jar","--host","localhost","--port",9000],"optionalArgs":["port","host","functions_emulator_port","functions_emulator_host"],"joinArgs":false}
+[info] i  database: database emulator logging to database-debug.log
+[debug] [2020-07-02T11:33:04.646Z] 13:33:04.645 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+
+[debug] [2020-07-02T11:33:04.790Z] 13:33:04.789 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
+
+[info] +  database: database emulator started at http://localhost:9000
+[info] i  database: For testing set FIREBASE_DATABASE_EMULATOR_HOST=localhost:9000
+[info] +  emulators: All emulators started, it is now safe to connect.
