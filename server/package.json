@@ -20,6 +20,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase-admin": "^8.13.0",
+    "mongodb": "^3.5.9",
     "socket.io": "^2.3.0"
   }
 }
