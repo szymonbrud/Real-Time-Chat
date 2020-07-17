@@ -20,18 +20,33 @@ import {
 } from './styles';
 
 const ChatPage = () => {
-  const {
-    messages,
-    textInputRef,
-    sendMessage,
-    triggerSend,
-    isRedirect,
-    messageWrapperRef,
-    diconnect,
-    onlineUsers,
-  } = useChatConnection();
+  // const {
+  //   messages,
+  //   textInputRef,
+  //   sendMessage,
+  //   triggerSend,
+  //   isRedirect,
+  //   messageWrapperRef,
+  //   diconnect,
+  //   onlineUsers,
+  // } = useChatConnection();
 
-  const { logout } = useAuthentication();
+  const { logout, userTokenId } = useAuthentication();
+
+  React.useEffect(() => {
+    userTokenId((token: string) => {
+      fetch('http://localhost:5500/check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: token }),
+      })
+        .then(data => data.json())
+        .then(e => console.log(e))
+        .catch(err => console.log(err));
+    });
+  }, []);
 
   return (
     <>

@@ -18,6 +18,7 @@ const useAuthentication = () => {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(userData => {
+      console.log(userData?.getIdToken().then(e => console.log(e)));
       if (userData) {
         setIsUserLogin(authenicationProgress.confirmed);
       } else {
@@ -60,7 +61,19 @@ const useAuthentication = () => {
       });
   };
 
-  return { loginWithGoogle, isUserLogin, logout, loginWithAnonymuss };
+  const userTokenId = (callback: Function) => {
+    firebase
+      .auth()
+      .currentUser?.getIdToken(true)
+      .then(idToken => {
+        callback(idToken);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  return { loginWithGoogle, isUserLogin, logout, loginWithAnonymuss, userTokenId };
 };
 
 export default useAuthentication;

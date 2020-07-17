@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http'
 import socketio from 'socket.io';
 import cors from 'cors';
+import bodyParser from 'body-parser'
 
 import fs from 'fs'
 
@@ -24,6 +25,11 @@ const app = express();
 const server = http.createServer(app);
 
 const io = socketio(server);
+
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 app.use(cors(corsOptions));
 // app.use(cors());
