@@ -3,11 +3,40 @@ import http from 'http'
 import socketio from 'socket.io';
 import cors from 'cors';
 import bodyParser from 'body-parser'
+import mongoose, { mongo, Schema } from 'mongoose'
+
+// const MongoClient = require('mongodb').MongoClient;
+
+mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true})
+
+mongoose.connection.once('open', () => {
+  console.log('connect')
+}).on('error', err => {
+  console.log(err)
+})
+// const client = new MongoClient(uri, { useNewUrlParser: true });
+// client.connect(err => {
+//   const collection = client.db("hello").collection("world");
+//   // perform actions on the collection object
+//   // console.log(collection)
+//   console.log(err)
+//   client.close();
+// });
+
+// MongoClient.connect(err => {
+//   const collection = client.db("hello").collection("world");
+//   // perform actions on the collection object
+//   // console.log(collection)
+//   console.log(err)
+//   client.close();
+// });
 
 import fs from 'fs'
-
 import router from './router';
 import { createUser, getUser, removeUser, getOnlineUsers } from './users';
+import { send } from 'process';
+
+const mainRoute = express.Router();
 
 const whitelist = ['http://localhost:3000', 'https://real-time-chat-szymonqqaz.netlify.app/'];
 const corsOptions = {
@@ -31,9 +60,29 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.use(cors(corsOptions));
-// app.use(cors());
-app.use(router);
+// app.use(cors(corsOptions));
+app.use(cors());
+app.use([router, mainRoute]);
+
+// const HelloSchema = new Schema({
+//   name: {type: String}
+// })
+
+const hello = mongoose.model('cars', {model: String, brand: String});
+
+mainRoute.get('/w', (req, res) => {
+  hello.find({}, (err, users) => {
+    console.log(err)
+    console.log(users)
+  })
+  // mongoose.model('hello').find((err, users) => {
+  //   console.log(err);
+  //   console.log(users)
+    
+  // })
+  res.end();
+})
+
 
 io.on('connect', socket => {
   socket.on('join', ({name, room}, callback) => {
