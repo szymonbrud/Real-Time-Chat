@@ -49,7 +49,11 @@ describe('create user', () => {
     const response2 = createUser(dataUser2.id, dataUser2.username, dataUser2.room);
     const removeUserData = removeUser(dataUser2.id);
 
-    expect(removeUserData).toEqual({id: dataUser2.id, username: dataUser2.username, room: dataUser2.room});
+    expect(removeUserData).toEqual({
+      id: dataUser2.id,
+      username: dataUser2.username,
+      room: dataUser2.room,
+    });
 
     const getUser2 = getUser(dataUser2.id);
     expect(getUser2).toBeUndefined();
