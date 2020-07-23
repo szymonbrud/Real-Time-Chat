@@ -19,74 +19,90 @@ if (window.location.hostname === 'localhost') {
 }
 
 const useChatConnection = () => {
-  const { username, room } = useContext(joinContext);
+  // const { username, room } = useContext(joinContext);
 
-  const textInputRef: RefObject<HTMLInputElement> = useRef(null);
-  const messageWrapperRef: RefObject<HTMLDivElement> = useRef(null);
+  // const textInputRef: RefObject<HTMLInputElement> = useRef(null);
+  // const messageWrapperRef: RefObject<HTMLDivElement> = useRef(null);
 
   const [messages, setMessages] = useState<messageObject[]>([]);
-  const [isRedirect, setIsRedirect] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  // const [isRedirect, setIsRedirect] = useState(false);
+  // const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
+  // useEffect(() => {
+  // if (username === '' || room === '') setIsRedirect(true);
   useEffect(() => {
-    if (username === '' || room === '') setIsRedirect(true);
-
     socket = io(URL);
-    socket.emit('join', { name: username, room }, (error: any) => {
-      if (error) {
-        alert(error);
-        setIsRedirect(true);
-      }
-    });
 
     socket.on('message', ({ user, text }: { user: string; text: string }) => {
-      setMessages((message) => [...message, { isReceived: true, sender: user, text }]);
-    });
-
-    socket.on('onlineUsers', ({ onlineUsers }: { onlineUsers: string[] }) => {
-      setOnlineUsers(onlineUsers);
+      setMessages(message => [...message, { isReceived: true, sender: user, text }]);
     });
   }, []);
 
-  const sendMessage = () => {
-    if (textInputRef.current && textInputRef.current.value !== '') {
-      const textInputRefValue = textInputRef.current.value;
-
-      socket.emit('sendMessage', { text: textInputRefValue }, () => {});
-      setMessages((message) => [
-        ...message,
-        { isReceived: false, sender: username, text: textInputRefValue },
-      ]);
-
-      textInputRef.current.value = '';
-    }
+  const joinToRoom = (roomId: string) => {
+    socket.emit('join', { name: 'Szymon Brud', roomId: roomId }, (error: any) => {
+      if (error) {
+        alert(error);
+      }
+    });
   };
 
-  const diconnect = () => {
-    socket.close();
-  };
+  // socket.emit('join', { name: username, room }, (error: any) => {
+  //   if (error) {
+  //     alert(error);
+  //     setIsRedirect(true);
+  //   }
+  // });
 
-  const triggerSend = (e: any) => {
-    if (e.keyCode === 13) {
-      sendMessage();
-    }
-  };
+  //   socket.on('onlineUsers', ({ onlineUsers }: { onlineUsers: string[] }) => {
+  //     setOnlineUsers(onlineUsers);
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    if (messageWrapperRef.current) {
-      messageWrapperRef.current.scrollTop = messageWrapperRef.current.scrollHeight;
-    }
-  }, [messages]);
+  // const sendMessage = () => {
+  //   if (textInputRef.current && textInputRef.current.value !== '') {
+  //     const textInputRefValue = textInputRef.current.value;
+
+  //     socket.emit('sendMessage', { text: textInputRefValue }, () => {});
+  //     setMessages((message) => [
+  //       ...message,
+  //       { isReceived: false, sender: username, text: textInputRefValue },
+  //     ]);
+
+  //     textInputRef.current.value = '';
+  //   }
+  // };
+
+  // const diconnect = () => {
+  //   socket.close();
+  // };
+
+  // const triggerSend = (e: any) => {
+  //   if (e.keyCode === 13) {
+  //     sendMessage();
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (messageWrapperRef.current) {
+  //     messageWrapperRef.current.scrollTop = messageWrapperRef.current.scrollHeight;
+  //   }
+  // }, [messages]);
+
+  // return {
+  //   messages,
+  //   textInputRef,
+  //   sendMessage,
+  //   triggerSend,
+  //   isRedirect,
+  //   messageWrapperRef,
+  //   diconnect,
+  //   onlineUsers,
+  // };
+  // }, []);
 
   return {
-    messages,
-    textInputRef,
-    sendMessage,
-    triggerSend,
-    isRedirect,
-    messageWrapperRef,
-    diconnect,
-    onlineUsers,
+    joinToRoom,
+    socketMessages: messages,
   };
 };
 

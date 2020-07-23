@@ -18,7 +18,6 @@ const useAuthentication = () => {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(userData => {
-      console.log(userData?.getIdToken().then(e => console.log(e)));
       if (userData) {
         setIsUserLogin(authenicationProgress.confirmed);
       } else {

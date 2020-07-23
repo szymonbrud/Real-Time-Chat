@@ -18,7 +18,7 @@ mongoose.connect('mongodb://localhost/realtimechat', {
 });
 mongoose.connection
   .once('open', () => {
-    console.log('connect');
+    console.log('connect with mongodb');
   })
   .on('error', (err) => {
     console.log(err);
@@ -51,8 +51,10 @@ app.use([router, mainRoute]);
 app.use('/user', usersRouter);
 
 io.on('connect', (socket) => {
-  socket.on('join', ({name, room}, callback) => {
-    const {error, user} = createUser(socket.id, name, room);
+  console.log('connect socket io');
+
+  socket.on('join', ({name, roomId}, callback) => {
+    const {error, user} = createUser(socket.id, name, roomId);
 
     if (error) {
       return callback(error);
@@ -60,35 +62,37 @@ io.on('connect', (socket) => {
 
     socket.join(user.room);
 
-    const onlineUsers = getOnlineUsers(user.room);
+    console.log('join socket');
+
+    // const onlineUsers = getOnlineUsers(user.room);
 
     socket.emit('message', {
       user: 'admin',
-      text: `${user.username}, witaj w pokojuasdfasdf: ${user.room}`,
+      text: `${user.username}, witaj w pokoju: ${user.room}`,
     });
     socket.to(user.room).emit('message', {user: 'admin', text: `${user.username} has joined!`});
-    io.in(user.room).emit('onlineUsers', {onlineUsers});
+    // io.in(user.room).emit('onlineUsers', {onlineUsers});
 
     callback();
   });
 
-  socket.on('sendMessage', ({text}, callback) => {
-    const {room, username} = getUser(socket.id);
+  // socket.on('sendMessage', ({text}, callback) => {
+  //   const {room, username} = getUser(socket.id);
 
-    socket.to(room).emit('message', {user: username, text: text});
+  //   socket.to(room).emit('message', {user: username, text: text});
 
-    callback();
-  });
+  //   callback();
+  // });
 
-  socket.on('disconnect', () => {
-    const user = removeUser(socket.id);
-    const onlineUsers = getOnlineUsers(user.room);
+  // socket.on('disconnect', () => {
+  //   const user = removeUser(socket.id);
+  //   const onlineUsers = getOnlineUsers(user.room);
 
-    if (user) {
-      io.to(user.room).emit('message', {user: 'Admin', text: `${user.username}, wyszedł.`});
-      io.in(user.room).emit('onlineUsers', {onlineUsers});
-    }
-  });
+  //   if (user) {
+  //     io.to(user.room).emit('message', {user: 'Admin', text: `${user.username}, wyszedł.`});
+  //     io.in(user.room).emit('onlineUsers', {onlineUsers});
+  //   }
+  // });
 });
 
 server.listen(process.env.PORT || 5500, () => console.log(`Server has started.`));
