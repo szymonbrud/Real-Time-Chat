@@ -1,6 +1,7 @@
 const users = [];
 
 export const createUser = (id, username, room) => {
+  console.log(room);
   const lowCaseRoom = room.toLowerCase();
   const existUser = users.find((user) => user.username === username);
 
@@ -22,4 +23,5 @@ export const removeUser = (id) => {
   }
 };
 
-export const getOnlineUsers = (room) => users.filter((user) => user.room === room).map((user) => user.username);
+export const getOnlineUsers = (room) =>
+  users.filter((user) => user.room === room).map((user) => user.username);

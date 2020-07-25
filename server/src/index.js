@@ -7,8 +7,7 @@ import mongoose from 'mongoose';
 
 import usersRouter from './routers/usersRoute';
 import router from './routers/router';
-
-import {createUser, getUser, removeUser, getOnlineUsers} from './users';
+import {mainSocket} from './sockets';
 
 const mainRoute = new express.Router();
 
@@ -16,6 +15,7 @@ mongoose.connect('mongodb://localhost/realtimechat', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
 mongoose.connection
   .once('open', () => {
     console.log('connect with mongodb');
@@ -26,7 +26,9 @@ mongoose.connection
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
+export const io = socketio(server);
+
+mainSocket(io);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -50,150 +52,4 @@ app.use(cors());
 app.use([router, mainRoute]);
 app.use('/user', usersRouter);
 
-io.on('connect', (socket) => {
-  console.log('connect socket io');
-
-  socket.on('join', ({name, roomId}, callback) => {
-    const {error, user} = createUser(socket.id, name, roomId);
-
-    if (error) {
-      return callback(error);
-    }
-
-    socket.join(user.room);
-
-    console.log('join socket');
-
-    // const onlineUsers = getOnlineUsers(user.room);
-
-    socket.emit('message', {
-      user: 'admin',
-      text: `${user.username}, witaj w pokoju: ${user.room}`,
-    });
-    socket.to(user.room).emit('message', {user: 'admin', text: `${user.username} has joined!`});
-    // io.in(user.room).emit('onlineUsers', {onlineUsers});
-
-    callback();
-  });
-
-  // socket.on('sendMessage', ({text}, callback) => {
-  //   const {room, username} = getUser(socket.id);
-
-  //   socket.to(room).emit('message', {user: username, text: text});
-
-  //   callback();
-  // });
-
-  // socket.on('disconnect', () => {
-  //   const user = removeUser(socket.id);
-  //   const onlineUsers = getOnlineUsers(user.room);
-
-  //   if (user) {
-  //     io.to(user.room).emit('message', {user: 'Admin', text: `${user.username}, wyszedł.`});
-  //     io.in(user.room).emit('onlineUsers', {onlineUsers});
-  //   }
-  // });
-});
-
 server.listen(process.env.PORT || 5500, () => console.log(`Server has started.`));
-
-// import {UsersSchema} from './databaseControll/Schema';
-
-// mainRoute.get('/w', (req, res) => {
-//   hello.find({}, (err, users) => {
-//     console.log(err);
-//     console.log(users);
-//   });
-//   res.end();
-// });
-
-// mainRoute.get('/save', (req, res) => {
-//   elephant.save((err, eleph) => {
-//     if (err) {
-//       console.log(err);
-//       res.end();
-//       return;
-//     }
-//     console.log(eleph);
-//     res.end();
-//   });
-// });
-
-// const User = mongoose.model('user', UsersSchema);
-
-// mainRoute.get('/read', (req, res) => {
-//   Animal.find({}, (err, eleph) => {
-//     if (err) {
-//       console.log(err);
-//       res.end();
-//       return;
-//     }
-//     console.log(eleph);
-//     res.end();
-//   });
-// });
-
-// mainRoute.get('/readById', (req, res) => {
-//   User.find({'rooms._id': new mongoose.Types.ObjectId('5f1318b11461584b20fb9f61')},
-//    (err, user) => {
-//     if (err) {
-//       console.log(err);
-//       res.end();
-//       return;
-//     }
-//     console.log(user);
-//     res.end();
-//   });
-// });
-
-// mainRoute.get('/readUsers', (req, res) => {
-//   User.find({}, (err, users) => {
-//     if (err) {
-//       console.log(err);
-//       res.end();
-//       return;
-//     }
-//     console.log(users);
-
-//     res.end();
-//   });
-// });
-
-// mainRoute.get('/removeOneObject', (req, res) => {
-//   const id = '5f13182236a8a742b8e6d0c4';
-
-//   User.update(
-//     {'rooms._id': new mongoose.Types.ObjectId(id)},
-//     {$pull: {rooms: {_id: new mongoose.Types.ObjectId(id)}}},
-//     {safe: true},
-//     (err, obj) => {
-//       if (err) {
-//         console.log(err);
-//         res.end();
-//         return;
-//       }
-//       console.log(obj);
-//       res.end();
-//     },
-//   );
-// });
-// mainRoute.get('/newUser', (req, res) => {
-//   const userData = new User({userId: 'asdfawerqwefasdfavxzc', name: 'HEHEH'});
-//   userData.save((err, done) => {
-//     console.log(done);
-//   });
-//   res.end();
-// });
-
-// mainRoute.get('/newUserRoom', (req, res) => {
-//   User.update(
-//     {},
-//     {
-//       $push: {rooms: {roomName: 'Jhonowie', roomId: '1234dfasd'}},
-//     },
-//     (err, done) => {
-//       console.log(done);
-//     },
-//   );
-//   res.end();
-// });

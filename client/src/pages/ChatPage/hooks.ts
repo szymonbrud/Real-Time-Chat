@@ -2,11 +2,12 @@ import { useEffect, useContext, useState, useRef, RefObject } from 'react';
 import io from 'socket.io-client';
 
 import { joinContext } from 'context/joinContext';
+import useAuthentication from 'authentication/authenticationHooks';
 
 interface messageObject {
   isReceived: boolean;
-  sender: string;
-  text: string;
+  senderName: string;
+  content: string;
 }
 
 let socket: any;
@@ -19,9 +20,10 @@ if (window.location.hostname === 'localhost') {
 }
 
 const useChatConnection = () => {
-  // const { username, room } = useContext(joinContext);
+  const { getUserName } = useAuthentication();
+  const userName = getUserName();
 
-  // const textInputRef: RefObject<HTMLInputElement> = useRef(null);
+  const textInputRef: RefObject<HTMLInputElement> = useRef(null);
   // const messageWrapperRef: RefObject<HTMLDivElement> = useRef(null);
 
   const [messages, setMessages] = useState<messageObject[]>([]);
@@ -30,16 +32,22 @@ const useChatConnection = () => {
 
   // useEffect(() => {
   // if (username === '' || room === '') setIsRedirect(true);
+
+  //TODO: zrobić tak aby można było wysłac wiadomość
+
   useEffect(() => {
     socket = io(URL);
 
     socket.on('message', ({ user, text }: { user: string; text: string }) => {
-      setMessages(message => [...message, { isReceived: true, sender: user, text }]);
+      setMessages(message => [
+        ...message,
+        { isReceived: user !== userName, senderName: user, content: text },
+      ]);
     });
   }, []);
 
   const joinToRoom = (roomId: string) => {
-    socket.emit('join', { name: 'Szymon Brud', roomId: roomId }, (error: any) => {
+    socket.emit('join', { name: userName, roomId: roomId }, (error: any) => {
       if (error) {
         alert(error);
       }
@@ -76,11 +84,11 @@ const useChatConnection = () => {
   //   socket.close();
   // };
 
-  // const triggerSend = (e: any) => {
-  //   if (e.keyCode === 13) {
-  //     sendMessage();
-  //   }
-  // };
+  const triggerSend = (e: any) => {
+    if (e.keyCode === 13) {
+      // sendMessage();
+    }
+  };
 
   // useEffect(() => {
   //   if (messageWrapperRef.current) {
@@ -103,6 +111,8 @@ const useChatConnection = () => {
   return {
     joinToRoom,
     socketMessages: messages,
+    textInputRef,
+    triggerSend,
   };
 };
 
