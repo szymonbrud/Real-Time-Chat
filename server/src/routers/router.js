@@ -21,7 +21,7 @@ router.post('/getMessages', [urlencodedParser, verifyUser], (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send({status: 'OK', messages: messages});
   })
-    .sort({date: -1})
+    .sort({date: 1})
     .limit(30);
 });
 

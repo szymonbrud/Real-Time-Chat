@@ -13,10 +13,14 @@ export const getAllRooms = (roomId, res) => {
     }
 
     const nameRooms = [];
-    rooms[0].rooms.forEach((e) => nameRooms.push(e));
-
-    res.setHeader('Content-Type', 'application/json');
-    res.send({status: 'OK', nameRooms});
+    if (rooms.length !== 0) {
+      rooms[0].rooms.forEach((e) => nameRooms.push(e));
+      res.setHeader('Content-Type', 'application/json');
+      res.send({status: 'OK', nameRooms});
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.send({status: 'OK', nameRooms: []});
+    }
   });
 };
 
@@ -25,4 +29,22 @@ export const checkError = (err, res) => {
     res.send({status: 'error'});
     res.end();
   }
+};
+
+export const sendMessageDatabase = ({userName, userId, content, roomId}) => {
+  // const date = new Date().toLocaleString('en-GB');
+  const date = new Date();
+
+  const message = new AllMessages({
+    senderName: userName,
+    senderId: userId,
+    content,
+    roomId,
+    date,
+  });
+  message.save((err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
 };

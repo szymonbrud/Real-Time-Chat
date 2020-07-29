@@ -1,18 +1,21 @@
 const users = [];
 
-export const createUser = (id, username, room) => {
+export const createUser = (id, username, room, userId) => {
   console.log(room);
-  const lowCaseRoom = room.toLowerCase();
   const existUser = users.find((user) => user.username === username);
 
   if (existUser) {
-    return {error: 'This username already exists!'};
+    const index = users.findIndex((user) => user.username === username);
+    users[index].room = room;
+  } else {
+    users.push({id, username, room: room, userId});
   }
-  users.push({id, username, room: lowCaseRoom});
-  return {user: {username, room: lowCaseRoom}};
+  return {user: {username, room, userId}};
 };
 
-export const getUser = (id) => users.find((user) => user.id === id);
+export const getUser = (id) => {
+  return users.find((user) => user.id === id);
+};
 
 export const removeUser = (id) => {
   const userIndexToRemote = users.findIndex((user) => user.id === id);

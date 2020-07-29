@@ -17,12 +17,14 @@ const useAuthentication = () => {
   const [isUserLogin, setIsUserLogin] = useState('unconfirmed');
 
   const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged((userData: any) => {
       if (userData) {
         setIsUserLogin(authenicationProgress.confirmed);
         setUserName(userData.displayName);
+        setUserId(userData.uid);
       } else {
         setIsUserLogin(authenicationProgress.error);
       }
@@ -75,11 +77,23 @@ const useAuthentication = () => {
       });
   };
 
-  const getUserName = () => {
-    return userName;
-  };
+  // const getUserName = () => {
+  //   return userName;
+  // };
 
-  return { loginWithGoogle, isUserLogin, logout, loginWithAnonymuss, userTokenId, getUserName };
+  // const getUserId = () => {
+  //   return userId;
+  // };
+
+  return {
+    loginWithGoogle,
+    isUserLogin,
+    logout,
+    loginWithAnonymuss,
+    userTokenId,
+    userName,
+    userId,
+  };
 };
 
 export default useAuthentication;

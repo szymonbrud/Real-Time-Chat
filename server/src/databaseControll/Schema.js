@@ -24,6 +24,7 @@ export const RoomsDataSchema = new Schema({
 
 export const MessagesAllSchema = new Schema({
   senderName: {type: String, required: true},
+  senderId: {type: String, required: true},
   content: String,
   date: {type: Date, default: Date.now()},
   roomId: Schema.Types.ObjectId,

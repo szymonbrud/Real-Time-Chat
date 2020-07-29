@@ -15,6 +15,7 @@ const verifyUser = (req, res, next) => {
       // res.setHeader('Content-Type', 'application/json');
       // res.send({status: 'Ok'});
       req.userId = uid;
+      console.log(uid);
 
       next();
     })
