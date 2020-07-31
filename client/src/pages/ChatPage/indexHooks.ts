@@ -26,8 +26,9 @@ const useChatPage = () => {
   const [rooms, setRooms] = useState<roomInterface[]>([]);
   const [messages, setMessages] = useState<messageInterface[]>([]);
   const [currentRoom, setCurrentRoom] = useState<currentRoomInterface>();
+  const [invadeLink, setInvadeLink] = useState('');
 
-  const { joinToRoomSocket } = useSocketConnect(setMessages);
+  const { joinToRoomSocket, diconectRoom } = useSocketConnect(setMessages, setCurrentRoom);
   const { userTokenId } = useAuthentication();
 
   const getRoomsByDatabase = () => {
@@ -49,6 +50,7 @@ const useChatPage = () => {
 
   const getRoomsMessage = (roomId: string, roomName: string) => {
     if (currentRoom?.roomId !== roomId) {
+      diconectRoom(currentRoom?.roomId);
       setMessages([]);
       setCurrentRoom({ roomName, roomId });
       userTokenId((token: string) => {
@@ -93,11 +95,32 @@ const useChatPage = () => {
     }
   };
 
+  const invadeToRoom = () => {
+    userTokenId((token: string) => {
+      fetch('http://localhost:5500/createInvade', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          roomId: currentRoom?.roomId,
+          roomName: currentRoom?.roomName,
+        }),
+      })
+        .then(data => data.json())
+        .then(e => {
+          if (e.status === 'OK') {
+            setInvadeLink(e.link);
+          }
+        })
+        .catch(err => console.log(err));
+    });
+  };
+
   useEffect(() => {
     getRoomsByDatabase();
   }, []);
-
-  console.log(messages);
 
   return {
     joinToRoom: getRoomsMessage,
@@ -106,6 +129,9 @@ const useChatPage = () => {
     messages,
     currentRoom,
     setMessages,
+    invadeToRoom,
+    invadeLink,
+    setInvadeLink,
   };
 };
 

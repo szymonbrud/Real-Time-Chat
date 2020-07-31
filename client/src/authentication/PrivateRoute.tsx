@@ -2,6 +2,9 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import useAuthentication from 'authentication/authenticationHooks';
 
+import LoginPage from 'pages/LoginPage';
+import { render } from '@testing-library/react';
+
 enum authenicationProgress {
   loading = 'loading',
   confirmed = 'confirmed',
@@ -19,7 +22,7 @@ const PrivateRoute = ({ component, ...rest }: any) => {
   }
 
   if (isUserLogin === authenicationProgress.error) {
-    return <Redirect to="/" />;
+    return <LoginPage />;
   }
 
   return <h1>weryfikacja</h1>;

@@ -34,3 +34,37 @@ export const LeftBar = styled.div`
 export const FlexDiv = styled.div`
   display: flex;
 `;
+
+export const InvateResponseWrapper = styled.div`
+  position: fixed;
+  left: 50%;
+  top: 50vh;
+  width: 500px;
+  height: 300px;
+  background: white;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 3px solid black;
+`;
+
+export const TextToCopy = styled.p`
+  text-align: center;
+`;
+
+export const CopyButton = styled.div`
+  border-radius: 8px;
+  border: 3px solid black;
+  background: white;
+  color: black;
+  width: 90px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  cursor: pointer;
+`;

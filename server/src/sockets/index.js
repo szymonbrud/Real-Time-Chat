@@ -8,24 +8,47 @@ export const mainSocket = (io) =>
     socket.on('join', ({name, roomId, userId}, callback) => {
       console.log('join socket');
 
+      // console.log(userId, roomId, name);
+
       if (name.length === 0 && roomId.length === 0) {
         return callback('error');
       }
+      console.log(roomId);
 
-      const {user} = createUser(socket.id, name, roomId, userId);
-      socket.join(user.room);
+      const {user, err} = createUser(socket.id, name, roomId, userId);
 
-      socket.emit('message', {
-        user: 'admin',
-        text: `${user.username}, witaj w pokoju: ${user.room}`,
-      });
-      socket.to(user.room).emit('message', {user: 'admin', text: `${user.username} has joined!`});
+      if (err) {
+        console.log('ERROR');
+        removeUser(socket.id);
+        callback('err');
+      } else {
+        console.log(`join: ${user.room}`);
+        socket.join(user.room);
 
-      callback();
+        socket.emit('message', {
+          user: 'admin',
+          text: `${user.username}, witaj w pokoju: ${user.room}`,
+        });
+        socket.to(user.room).emit('message', {user: 'admin', text: `${user.username} has joined!`});
+
+        console.log(Object.keys(socket.rooms));
+
+        callback();
+      }
+    });
+
+    socket.on('disconnectRoom', ({lastRoomId}) => {
+      console.log(`leave: ${lastRoomId}`);
+      socket.leave(lastRoomId);
+      console.log(Object.keys(socket.rooms));
     });
 
     socket.on('sendMessage', ({text}, callback) => {
-      const {room, username, userId} = getUser(socket.id);
+      const {room, username, userId, err} = getUser(socket.id);
+
+      if (err) {
+        callback('err');
+      }
 
       socket.to(room).emit('message', {user: username, text: text});
 

@@ -12,7 +12,7 @@ if (window.location.hostname === 'localhost') {
   URL = 'https://real-time-chat-backend.herokuapp.com/';
 }
 
-const useSocketConnect = (setMessages?: Function) => {
+const useSocketConnect = (setMessages?: Function, setCurrentRoom?: Function) => {
   const { userName, userId } = useAuthentication();
 
   const textInputRef: RefObject<HTMLInputElement> = useRef(null);
@@ -33,6 +33,7 @@ const useSocketConnect = (setMessages?: Function) => {
       { name: userName ? userName : 'anonymus', roomId: roomId, userId: userId },
       (error: any) => {
         if (error) {
+          setCurrentRoom && setCurrentRoom('');
           alert(error);
         }
       },
@@ -70,6 +71,10 @@ const useSocketConnect = (setMessages?: Function) => {
     }
   };
 
+  const diconectRoom = (lastRoomId: any) => {
+    socket.emit('disconnectRoom', { lastRoomId });
+  };
+
   useEffect(() => {
     socket = io(URL);
 
@@ -81,6 +86,7 @@ const useSocketConnect = (setMessages?: Function) => {
     textInputRef,
     triggerSend,
     sendMessage,
+    diconectRoom,
   };
 };
 

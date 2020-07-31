@@ -5,6 +5,7 @@ import GlobalStyleProvider from 'assets/styles/globalStyles';
 import { JoinContextProvider } from 'context/joinContext';
 import LoginPage from 'pages/LoginPage';
 import ChatPage from 'pages/ChatPage';
+import JoinPage from 'pages/JoinPage';
 
 import PrivateRoute from 'authentication/PrivateRoute';
 import CheckRoute from 'helpers/CheckRoute';
@@ -17,6 +18,7 @@ const App = () => {
           <Switch>
             <CheckRoute exact path="/" component={LoginPage} />
             <PrivateRoute path="/room" component={ChatPage} />
+            <PrivateRoute path="/join/:key/:roomName" component={JoinPage} />
           </Switch>
         </Router>
       </JoinContextProvider>

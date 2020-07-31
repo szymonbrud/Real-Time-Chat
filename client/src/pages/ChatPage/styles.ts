@@ -118,7 +118,7 @@ export const Message = styled.div`
   }
 
   ${({ isRight, username }: { isRight?: boolean; username: string }) =>
-    !isRight
+    isRight
       ? css`
           animation: ${messageAnimationRight} 0.2s linear;
           animation-timing-function: cubic-bezier(0.9, 0.23, 0.11, 1.84);

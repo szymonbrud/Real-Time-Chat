@@ -15,10 +15,28 @@ import {
   SenderWrapper,
   Message,
 } from './styles';
-import { RoomButton, NewButton, LeftBar, FlexDiv } from './newStyles';
+import {
+  RoomButton,
+  NewButton,
+  LeftBar,
+  FlexDiv,
+  InvateResponseWrapper,
+  CopyButton,
+  TextToCopy,
+} from './newStyles';
 
 const ChatPage = () => {
-  const { createNewRoom, joinToRoom, rooms, messages, currentRoom, setMessages } = indexHooks();
+  const {
+    createNewRoom,
+    joinToRoom,
+    rooms,
+    messages,
+    currentRoom,
+    setMessages,
+    invadeToRoom,
+    invadeLink,
+    setInvadeLink,
+  } = indexHooks();
   const { textInputRef, triggerSend, sendMessage } = useSocketConnect(setMessages);
   const { logout, userId } = useAuthentication();
 
@@ -35,15 +53,30 @@ const ChatPage = () => {
             ))
           )}
         </LeftBar>
+        {invadeLink && (
+          <InvateResponseWrapper>
+            <TextToCopy>{invadeLink}</TextToCopy>
+            <CopyButton
+              onClick={() => {
+                navigator.clipboard.writeText(invadeLink);
+                console.log('skopiowano ? ');
+              }}
+            >
+              copy
+            </CopyButton>
+            <button onClick={() => setInvadeLink('')}>wyjście</button>
+          </InvateResponseWrapper>
+        )}
         <MainWrapper>
           {currentRoom && (
             <MessagesMainWrapper>
+              <button onClick={invadeToRoom}>Invate to room</button>
               <h1>{currentRoom?.roomName}</h1>
               {/* <MessagesWrapper ref={messageWrapperRef}> */}
               <MessagesWrapper>
-                {messages.map(({ senderName, content, _id }, index) => {
+                {messages.map(({ senderName, content, _id, isSendByMe }, index) => {
                   return (
-                    <Message isRight={true} username={senderName} key={_id}>
+                    <Message isRight={isSendByMe} username={senderName} key={_id}>
                       {content}
                     </Message>
                   );

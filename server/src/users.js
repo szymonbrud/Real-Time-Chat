@@ -1,20 +1,46 @@
 const users = [];
 
-export const createUser = (id, username, room, userId) => {
-  console.log(room);
-  const existUser = users.find((user) => user.username === username);
+// TODO: jesli dołaczanie zależy od nicku to jest totalnie bez sensu
 
-  if (existUser) {
-    const index = users.findIndex((user) => user.username === username);
+export const createUser = (id, username, room, userId) => {
+  const existUser = users.find((user) => {
+    if (user.userId === userId && user.id === id) return user;
+  });
+  const sameUserDiffrentDevice = users.find((user) => {
+    if (user.userId === userId && user.room === room) return user;
+  });
+
+  console.log(users);
+
+  if (sameUserDiffrentDevice) {
+    console.log('1');
+    return {err: 'Jesteś już w tym pokoju na innym urządzeniu'};
+  } else if (existUser) {
+    console.log('2');
+    const index = users.findIndex((user) => user.userId === userId && user.id === id);
     users[index].room = room;
   } else {
+    console.log('3');
+
     users.push({id, username, room: room, userId});
   }
   return {user: {username, room, userId}};
+  // -
+  // 1) musi działać jeśli otworzymy tę samą rozmowę na 2 kontach
+  // const existUserSameRoom = users.find((user) => user.userId === userId && user.room === room);
+
+  // if (existUserSameRoom) {
+  //   users.push(existUserSameRoom);
+  // }
 };
 
 export const getUser = (id) => {
-  return users.find((user) => user.id === id);
+  const us = users.find((user) => user.id === id);
+  if (us) {
+    return us;
+  } else {
+    return {err: 'err'};
+  }
 };
 
 export const removeUser = (id) => {
@@ -28,3 +54,9 @@ export const removeUser = (id) => {
 
 export const getOnlineUsers = (room) =>
   users.filter((user) => user.room === room).map((user) => user.username);
+
+// script
+// 1) musi działać jeśli otworzymy tę samą rozmowę na 2 kontach
+// 2) musi działać jeśli otworzymy 2 różne rozmowy na tym mamym koncie
+// 3) wcześniej byliśmy na podwójnej rozmowie a teraz każdy dołacza na inny kanał
+// 4) odwrotnie do 3) ↑
