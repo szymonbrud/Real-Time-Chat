@@ -5,6 +5,7 @@ import { grey } from '@material-ui/core/colors';
 import useAuthentication from 'authentication/authenticationHooks';
 import useSocketConnect from './socketHooks';
 import indexHooks from './indexHooks';
+import useStartHooks from './useStartHooks';
 
 import {
   MainWrapper,
@@ -36,9 +37,11 @@ const ChatPage = () => {
     invadeToRoom,
     invadeLink,
     setInvadeLink,
+    messageWrapperRef,
   } = indexHooks();
   const { textInputRef, triggerSend, sendMessage } = useSocketConnect(setMessages);
   const { logout, userId } = useAuthentication();
+  useStartHooks(setMessages);
 
   return (
     <>
@@ -73,7 +76,7 @@ const ChatPage = () => {
               <button onClick={invadeToRoom}>Invate to room</button>
               <h1>{currentRoom?.roomName}</h1>
               {/* <MessagesWrapper ref={messageWrapperRef}> */}
-              <MessagesWrapper>
+              <MessagesWrapper ref={messageWrapperRef}>
                 {messages.map(({ senderName, content, _id, isSendByMe }, index) => {
                   return (
                     <Message isRight={isSendByMe} username={senderName} key={_id}>

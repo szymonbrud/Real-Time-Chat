@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, RefObject, useRef } from 'react';
 
 import useSocketConnect from './socketHooks';
 import useAuthentication from 'authentication/authenticationHooks';
@@ -27,6 +27,8 @@ const useChatPage = () => {
   const [messages, setMessages] = useState<messageInterface[]>([]);
   const [currentRoom, setCurrentRoom] = useState<currentRoomInterface>();
   const [invadeLink, setInvadeLink] = useState('');
+
+  const messageWrapperRef: RefObject<HTMLDivElement> = useRef(null);
 
   const { joinToRoomSocket, diconectRoom } = useSocketConnect(setMessages, setCurrentRoom);
   const { userTokenId } = useAuthentication();
@@ -119,6 +121,12 @@ const useChatPage = () => {
   };
 
   useEffect(() => {
+    if (messageWrapperRef.current) {
+      messageWrapperRef.current.scrollTop = messageWrapperRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
     getRoomsByDatabase();
   }, []);
 
@@ -132,6 +140,7 @@ const useChatPage = () => {
     invadeToRoom,
     invadeLink,
     setInvadeLink,
+    messageWrapperRef,
   };
 };
 

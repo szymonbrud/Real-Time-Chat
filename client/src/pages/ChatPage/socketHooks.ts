@@ -1,31 +1,12 @@
 import { useEffect, useRef, RefObject, createRef } from 'react';
-import io from 'socket.io-client';
 
+import { socket } from './useStartHooks';
 import useAuthentication from 'authentication/authenticationHooks';
-
-let socket: any;
-let URL: string;
-
-if (window.location.hostname === 'localhost') {
-  URL = 'http://localhost:5500/';
-} else {
-  URL = 'https://real-time-chat-backend.herokuapp.com/';
-}
 
 const useSocketConnect = (setMessages?: Function, setCurrentRoom?: Function) => {
   const { userName, userId } = useAuthentication();
 
   const textInputRef: RefObject<HTMLInputElement> = useRef(null);
-
-  const socketMessages = () => {
-    socket.on('message', ({ user, text }: { user: string; text: string }) => {
-      setMessages &&
-        setMessages((message: any) => [
-          ...message,
-          { isReceived: user !== userName, senderName: user, content: text },
-        ]);
-    });
-  };
 
   const joinToRoom = (roomId: string) => {
     socket.emit(
@@ -75,11 +56,10 @@ const useSocketConnect = (setMessages?: Function, setCurrentRoom?: Function) => 
     socket.emit('disconnectRoom', { lastRoomId });
   };
 
-  useEffect(() => {
-    socket = io(URL);
+  // useEffect(() => {
 
-    socketMessages();
-  }, []);
+  //   // socketMessages();
+  // }, []);
 
   return {
     joinToRoomSocket: joinToRoom,

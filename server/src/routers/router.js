@@ -163,7 +163,7 @@ export default router;
 // od odbiorcy czy od kogoś innego ✔
 // TODO: 8) zrobić tak aby się nie dało pisać z tego samego konta do
 // samego siebie jako inna osoba tylko aby to było połączone ✔
+// TODO: 10) pomyśleć nad tym aby socket.io nie używał się 2 razy ✔
+// TODO: 11) zrobić auto scrolla ✔
 
-// TODO: 10) pomyśleć nad tym aby socket.io nie używał się 2 razy
-// TODO: 11) zrobić review
-// TODO: 12) zrobić auto scrolla
+// TODO: 12) zrobić review i testy
