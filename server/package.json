@@ -8,6 +8,7 @@
     "test": "jest --watch"
   },
   "devDependencies": {
+    "@shelf/jest-mongodb": "^1.2.1",
     "eslint": "^7.4.0",
     "eslint-config-google": "^0.14.0",
     "jest": "^26.0.1",
@@ -27,6 +28,7 @@
     "google-auth-library": "^6.0.5",
     "mongodb": "^3.5.9",
     "mongoose": "^5.9.24",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "supertest": "^4.0.2"
   }
 }

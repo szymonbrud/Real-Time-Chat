@@ -8,17 +8,26 @@ import mongoose from 'mongoose';
 import usersRouter from './routers/usersRoute';
 import router from './routers/router';
 import {mainSocket} from './sockets';
+import {env} from 'process';
 
 const mainRoute = new express.Router();
 
-mongoose.connect('mongodb://localhost/realtimechat', {
+let databaseName = '';
+
+if (env.NODE_ENV === 'test') {
+  databaseName = 'realtimechat_test';
+} else {
+  databaseName = 'realtimechat';
+}
+
+mongoose.connect(`mongodb://localhost/${databaseName}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
 mongoose.connection
   .once('open', () => {
-    console.log('connect with mongodb');
+    // console.log('connect with mongodb');
   })
   .on('error', (err) => {
     console.log(err);
@@ -52,4 +61,7 @@ app.use(cors());
 app.use([router, mainRoute]);
 app.use('/user', usersRouter);
 
-server.listen(process.env.PORT || 5500, () => console.log(`Server has started.`));
+// server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));
+server.listen(process.env.PORT || 5000);
+
+export default app;

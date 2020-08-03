@@ -70,6 +70,7 @@ const useAuthentication = () => {
       .auth()
       .currentUser?.getIdToken(true)
       .then(idToken => {
+        console.log(idToken);
         callback(idToken);
       })
       .catch(err => {

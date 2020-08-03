@@ -167,3 +167,4 @@ export default router;
 // TODO: 11) zrobić auto scrolla ✔
 
 // TODO: 12) zrobić review i testy
+// TOOD: 12.1) Jakie testy mogę przeprowadzić po obu stronach

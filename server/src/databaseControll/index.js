@@ -8,7 +8,9 @@ export const AllMessages = mongoose.model('messages', MessagesAllSchema);
 export const getAllRooms = (roomId, res) => {
   RoomsData.find({userId: roomId}, (err, rooms) => {
     if (err) {
+      console.log('HERE');
       res.send({status: 'error'});
+      res.end();
       return;
     }
 
