@@ -1,0 +1,2 @@
+start startAsAdministatorShort.bat.lnk
+pause

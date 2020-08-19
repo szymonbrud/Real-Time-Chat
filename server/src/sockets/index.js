@@ -1,4 +1,4 @@
-import {createUser, getUser, removeUser, getOnlineUsers} from '../users';
+import {createUser, getUser, removeUser} from '../users';
 import {sendMessageDatabase} from '../databaseControll';
 
 export const mainSocket = (io) =>

@@ -35,7 +35,7 @@ const useChatPage = () => {
 
   const getRoomsByDatabase = () => {
     userTokenId((token: string) => {
-      fetch('http://localhost:5500/getRooms', {
+      fetch('http://localhost:5000/getRooms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const useChatPage = () => {
       setMessages([]);
       setCurrentRoom({ roomName, roomId });
       userTokenId((token: string) => {
-        fetch('http://localhost:5500/getMessages', {
+        fetch('http://localhost:5000/getMessages', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ const useChatPage = () => {
     } else if (roomName) {
       userTokenId((token: string) => {
         console.log('send');
-        fetch('http://localhost:5500/createRoom', {
+        fetch('http://localhost:5000/createRoom', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const useChatPage = () => {
 
   const invadeToRoom = () => {
     userTokenId((token: string) => {
-      fetch('http://localhost:5500/createInvade', {
+      fetch('http://localhost:5000/createInvade', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

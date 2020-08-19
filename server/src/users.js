@@ -10,18 +10,12 @@ export const createUser = (id, username, room, userId) => {
     if (user.userId === userId && user.room === room) return user;
   });
 
-  console.log(users);
-
   if (sameUserDiffrentDevice) {
-    console.log('1');
     return {err: 'Jesteś już w tym pokoju na innym urządzeniu'};
   } else if (existUser) {
-    console.log('2');
     const index = users.findIndex((user) => user.userId === userId && user.id === id);
     users[index].room = room;
   } else {
-    console.log('3');
-
     users.push({id, username, room: room, userId});
   }
   return {user: {username, room, userId}};

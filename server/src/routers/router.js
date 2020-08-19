@@ -39,25 +39,30 @@ router.post('/getMessages', [urlencodedParser, verifyUser], (req, res) => {
 router.post('/createRoom', [urlencodedParser, verifyUser], (req, res) => {
   const {roomName} = req.body;
 
-  RoomsData.find({userId: req.userId}, (err, rooms) => {
-    checkError(err, res);
+  if (roomName === '' || !roomName) {
+    res.send({status: 'error'});
+    res.end();
+  } else {
+    RoomsData.find({userId: req.userId}, (err, rooms) => {
+      checkError(err, res);
 
-    const newRoom = new RoomsData({userId: req.userId, rooms: [{roomName: roomName}]});
+      const newRoom = new RoomsData({userId: req.userId, rooms: [{roomName: roomName}]});
 
-    if (rooms.length === 0) {
-      newRoom.save((err, e) => {
-        checkError(err, res);
-        getAllRooms(req.userId, res);
-      });
-    } else {
-      RoomsData.update({userId: req.userId}, {$push: {rooms: {roomName: roomName}}}, (err, e) => {
-        checkError(err, res);
-        if (e.ok) {
+      if (rooms.length === 0) {
+        newRoom.save((err, e) => {
+          checkError(err, res);
           getAllRooms(req.userId, res);
-        }
-      });
-    }
-  });
+        });
+      } else {
+        RoomsData.update({userId: req.userId}, {$push: {rooms: {roomName: roomName}}}, (err, e) => {
+          checkError(err, res);
+          if (e.ok) {
+            getAllRooms(req.userId, res);
+          }
+        });
+      }
+    });
+  }
 });
 
 const invadeKeys = [];
@@ -85,10 +90,16 @@ const checkValidateInvadedKeys = (key) => {
 
 router.post('/createInvade', [urlencodedParser], (req, res) => {
   const {roomId, roomName} = req.body;
-  const key = generateInvade(roomId, roomName);
-  res.setHeader('Content-Type', 'application/json');
-  res.send({status: 'OK', link: `http://localhost:3000/join/${key}/${roomName}`});
-  res.end();
+
+  if (!roomId || !roomName || roomId === '' || roomName === '') {
+    res.send({status: 'error'});
+    res.end();
+  } else {
+    const key = generateInvade(roomId, roomName);
+    res.setHeader('Content-Type', 'application/json');
+    res.send({status: 'OK', link: `http://localhost:3000/join/${key}/${roomName}`});
+    res.end();
+  }
 });
 
 router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
@@ -168,3 +179,4 @@ export default router;
 
 // TODO: 12) zrobić review i testy
 // TOOD: 12.1) Jakie testy mogę przeprowadzić po obu stronach
+// TODO: 13) Napisać skryp basch który by mi włączył mongoodb przed nodemonem

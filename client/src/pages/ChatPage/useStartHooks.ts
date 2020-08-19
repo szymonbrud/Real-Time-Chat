@@ -7,7 +7,7 @@ export let socket: any;
 let URL: string;
 
 if (window.location.hostname === 'localhost') {
-  URL = 'http://localhost:5500/';
+  URL = 'http://localhost:5000/';
 } else {
   URL = 'https://real-time-chat-backend.herokuapp.com/';
 }
