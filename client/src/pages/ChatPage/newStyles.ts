@@ -68,3 +68,23 @@ export const CopyButton = styled.div`
   font-weight: 700;
   cursor: pointer;
 `;
+
+export const CreateANewRoom = styled.div`
+  position: fixed;
+  top: 50vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 350px;
+  background: white;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  ${({ visible }: { visible?: boolean }) =>
+    visible &&
+    css`
+      display: flex;
+    `}
+`;

@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon start.js",
+    "testCypress": "nodemon start.js",
     "test": "jest --watch",
     "bat": "start start.bat"
   },

@@ -24,11 +24,13 @@ import {
   InvateResponseWrapper,
   CopyButton,
   TextToCopy,
+  CreateANewRoom,
 } from './newStyles';
 
 const ChatPage = () => {
   const {
-    createNewRoom,
+    acceptNewRoomName,
+    showNewRoom,
     joinToRoom,
     rooms,
     messages,
@@ -38,6 +40,8 @@ const ChatPage = () => {
     invadeLink,
     setInvadeLink,
     messageWrapperRef,
+    isVisibleCreateNewRoom,
+    createNewRoomInputRef,
   } = indexHooks();
   const { textInputRef, triggerSend, sendMessage } = useSocketConnect(setMessages);
   const { logout, userId } = useAuthentication();
@@ -45,14 +49,21 @@ const ChatPage = () => {
 
   return (
     <>
+      <CreateANewRoom visible={isVisibleCreateNewRoom}>
+        <p>Nazwa twojego nowego pokoju</p>
+        <input ref={createNewRoomInputRef}></input>
+        <button onClick={acceptNewRoomName}>Potwierdź</button>
+      </CreateANewRoom>
       <FlexDiv>
         <LeftBar>
-          <NewButton onClick={createNewRoom}>Create a new room</NewButton>
+          <NewButton onClick={showNewRoom}>Create a new room</NewButton>
           {rooms.length === 0 ? (
             <h1>ładowanie pokoi</h1>
           ) : (
             rooms.map(e => (
-              <RoomButton onClick={() => joinToRoom(e._id, e.roomName)}>{e.roomName}</RoomButton>
+              <RoomButton className="room" onClick={() => joinToRoom(e._id, e.roomName)}>
+                {e.roomName}
+              </RoomButton>
             ))
           )}
         </LeftBar>

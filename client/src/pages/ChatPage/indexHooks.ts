@@ -27,8 +27,10 @@ const useChatPage = () => {
   const [messages, setMessages] = useState<messageInterface[]>([]);
   const [currentRoom, setCurrentRoom] = useState<currentRoomInterface>();
   const [invadeLink, setInvadeLink] = useState('');
+  const [isVisibleCreateNewRoom, setIsVisibleCreateNewRoom] = useState(false);
 
   const messageWrapperRef: RefObject<HTMLDivElement> = useRef(null);
+  const createNewRoomInputRef: RefObject<HTMLInputElement> = useRef(null);
 
   const { joinToRoomSocket, diconectRoom } = useSocketConnect(setMessages, setCurrentRoom);
   const { userTokenId } = useAuthentication();
@@ -73,9 +75,13 @@ const useChatPage = () => {
     }
   };
 
-  const createNewRoom = () => {
-    const roomName = prompt('Please enter your name', '');
+  const showNewRoom = () => {
+    setIsVisibleCreateNewRoom(true);
+  };
 
+  const acceptNewRoomName = () => {
+    const roomName = createNewRoomInputRef?.current?.value;
+    setIsVisibleCreateNewRoom(false);
     if (roomName?.length === 0) {
       alert('FAIL! Room name have to be more that one letter');
     } else if (roomName) {
@@ -132,7 +138,8 @@ const useChatPage = () => {
 
   return {
     joinToRoom: getRoomsMessage,
-    createNewRoom,
+    acceptNewRoomName,
+    showNewRoom,
     rooms,
     messages,
     currentRoom,
@@ -141,6 +148,8 @@ const useChatPage = () => {
     invadeLink,
     setInvadeLink,
     messageWrapperRef,
+    isVisibleCreateNewRoom,
+    createNewRoomInputRef,
   };
 };
 

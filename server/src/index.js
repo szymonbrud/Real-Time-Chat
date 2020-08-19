@@ -16,6 +16,8 @@ let databaseName = '';
 
 if (env.NODE_ENV === 'test') {
   databaseName = 'realtimechat_test';
+} else if (env.npm_lifecycle_event === 'testCypress') {
+  databaseName = 'realtimechat_test';
 } else {
   databaseName = 'realtimechat';
 }
