@@ -22,7 +22,9 @@ const LoginPage = () => {
     <Background>
       <Text>Stwórz nowy pokój lub dołącz</Text>
       <button onClick={loginWithGoogle}>login with google</button>
-      <button onClick={loginWithAnonymuss}>login with anonymuss</button>
+      <button data-testid="anonymussLogin" onClick={loginWithAnonymuss}>
+        login with anonymuss
+      </button>
     </Background>
   );
 };

@@ -1,63 +1,80 @@
 /// <reference types="cypress" />
 
-// const { MongoClient } = require('mongodb');
-// import mongoose from 'mongoose';
+const { waitForDebugger } = require('inspector');
 
-describe('My first visit site', () => {
-  // let connection;
-  // let db;
+const dataTestId = name => `[data-testid=${name}]`;
 
-  // beforeEach(async () => {
-  //   connection = await MongoClient.connect('mongodb://localhost/realtimechat_tests', {
-  //     useNewUrlParser: true,
-  //     useUnifiedTopology: true,
-  //   });
-  //   db = await connection.db('realtimechat_tests');
-  // });
+const messageWrapper = '[data-testid="messageWrapper"]';
 
-  it('My first test', () => {
-    cy.visit('http://localhost:3000/');
+const createANewRoom = roomName => {
+  cy.contains('Create a new room').click();
+  cy.get('input').type(roomName);
+  cy.get(dataTestId('acceptButton')).click();
+};
 
-    // expe(cy.url()).equal('http://localhost:3000/room');
-    cy.url().should('eq', 'http://localhost:3000/room');
+Cypress.on('uncaught:exception', (err, runnable) => {
+  return false;
+});
 
-    // cy.contains('Create a new room').click();
-    // cy.get('input').type('It will be my new room');
-    // cy.contains('Potwierdź').click();
-
-    // cy.get('.room').click();
-    // console.log(cy.get('.room'));
-    // cy.get('.room').should('have.value', 'It will be my new room');
-    // cy.get('.room').contains('It will be my new room').should('eq', 'It will be my new room');
-    // cy.get('.room').contains('It will be my new room');
-    cy.task('updateTask').then(e => {
-      console.log(e);
-    });
-
-    //TODO: jak zrobićusuwanie dancyh po dodaaniu, napisać to w folderze server i tylko użyteć tej funkcji jako helper
-
-    // should('have.value', 'It will be my new room');
-    // cy.contains('It will be my new room').should('have.value', 'It will be my new room')
-
-    // cy.type('he');
-
-    //     cy.on('window:alert', () => {
-    // cy.get('#prompt').click().then(function () {
-    //       expect(this.windowAlert).to.be.calledWith('Wow! I\'m a Scorpio too!')
-    //     })
-    //     })
-
-    // cy.window().then(win => {
-    //   // cy.get(win.alert).type('he');
-    //   cy.stub(win, 'prompt').returns('scorpio');
-    //   cy.stub(win, 'alert').as('windowAlert');
-    // });
-
-    // cy.url().wait('http://localhost:3000/room');
+describe('Testing /room', () => {
+  after(() => {
+    cy.task('clearDatabase');
   });
 
-  // afterEach(async () => {
-  //   await connection.close();
-  //   await db.close();
-  // });
+  beforeEach(() => {
+    cy.visit('http://localhost:3000/');
+  });
+
+  afterEach(() => {
+    cy.task('clearDatabase');
+  });
+
+  it('Check forwarding to /room', () => {
+    cy.url().should('eq', 'http://localhost:3000/room');
+  });
+
+  it('Create a new room', () => {
+    createANewRoom('It will be my new room');
+
+    cy.get('.room').contains('It will be my new room');
+  });
+
+  it('Join to room, and send message by me', () => {
+    createANewRoom('It will be my new room');
+
+    cy.contains('It will be my new room').click();
+    cy.get(messageWrapper).contains('anonymus, witaj w pokoju:');
+
+    cy.get('input[placeholder="napisz coś..."]').type('Hello I am new here!').type('{enter}');
+
+    cy.get(messageWrapper).contains('Hello I am new here!');
+  });
+
+  it('Invade to room, join to room clinet 2, and send message by client 2', () => {
+    createANewRoom('hello room');
+
+    cy.contains('hello room').click();
+
+    cy.contains('Invate to room').click();
+
+    cy.get('[data-testid=textToCopy]')
+      .invoke('text')
+      .should(text2 => {
+        if (text2) {
+          cy.task('runPupTest1', text2);
+        }
+      });
+
+    cy.contains('wyjście').click();
+
+    cy.wait(10000);
+
+    cy.get('[data-testid=messageWrapper] > :nth-child(2)').should(
+      'contain',
+      'anonymus has joined!',
+    );
+  });
 });
+
+//TODO: sprawdzić jaka jest najlepsza struktura dla czyrpess
+//TODO: przypomniec sobie najlepsze praktyki pisania testów z tego artykułu

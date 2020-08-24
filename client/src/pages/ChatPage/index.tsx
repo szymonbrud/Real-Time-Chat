@@ -52,7 +52,9 @@ const ChatPage = () => {
       <CreateANewRoom visible={isVisibleCreateNewRoom}>
         <p>Nazwa twojego nowego pokoju</p>
         <input ref={createNewRoomInputRef}></input>
-        <button onClick={acceptNewRoomName}>Potwierdź</button>
+        <button data-testid="acceptButton" onClick={acceptNewRoomName}>
+          Potwierdź
+        </button>
       </CreateANewRoom>
       <FlexDiv>
         <LeftBar>
@@ -61,7 +63,11 @@ const ChatPage = () => {
             <h1>ładowanie pokoi</h1>
           ) : (
             rooms.map(e => (
-              <RoomButton className="room" onClick={() => joinToRoom(e._id, e.roomName)}>
+              <RoomButton
+                className="room"
+                data-testid="roomButton"
+                onClick={() => joinToRoom(e._id, e.roomName)}
+              >
                 {e.roomName}
               </RoomButton>
             ))
@@ -69,7 +75,9 @@ const ChatPage = () => {
         </LeftBar>
         {invadeLink && (
           <InvateResponseWrapper>
-            <TextToCopy>{invadeLink}</TextToCopy>
+            <TextToCopy data-testid="textToCopy" className="he">
+              {invadeLink}
+            </TextToCopy>
             <CopyButton
               onClick={() => {
                 navigator.clipboard.writeText(invadeLink);
@@ -87,7 +95,7 @@ const ChatPage = () => {
               <button onClick={invadeToRoom}>Invate to room</button>
               <h1>{currentRoom?.roomName}</h1>
               {/* <MessagesWrapper ref={messageWrapperRef}> */}
-              <MessagesWrapper ref={messageWrapperRef}>
+              <MessagesWrapper data-testid="messageWrapper" ref={messageWrapperRef}>
                 {messages.map(({ senderName, content, _id, isSendByMe }, index) => {
                   return (
                     <Message isRight={isSendByMe} username={senderName} key={_id}>

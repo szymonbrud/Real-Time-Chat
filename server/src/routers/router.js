@@ -37,6 +37,7 @@ router.post('/getMessages', [urlencodedParser, verifyUser], (req, res) => {
 });
 
 router.post('/createRoom', [urlencodedParser, verifyUser], (req, res) => {
+  console.log('hello');
   const {roomName} = req.body;
 
   if (roomName === '' || !roomName) {
@@ -80,6 +81,9 @@ const generateInvade = (roomId, roomName) => {
 };
 
 const checkValidateInvadedKeys = (key) => {
+  console.log(invadeKeys);
+  console.log('---');
+  console.log(key);
   const find = invadeKeys.find((e) => e.key === key);
   if (find) {
     const findIndex = invadeKeys.findIndex((e) => e.key === key);
@@ -103,6 +107,7 @@ router.post('/createInvade', [urlencodedParser], (req, res) => {
 });
 
 router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
+  console.log('it is actualizate?');
   const {key} = req.body;
 
   const roomData = checkValidateInvadedKeys(key);

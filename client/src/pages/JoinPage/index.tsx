@@ -20,7 +20,7 @@ const JoinPage = () => {
 
   const sendJoinRequest = () => {
     userTokenId((token: string) => {
-      fetch('http://localhost:5500/join', {
+      fetch('http://localhost:5000/join', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,8 +45,10 @@ const JoinPage = () => {
   const waitPage = (
     <>
       <p>Chcesz dołaczyć do pokoju: {roomName}</p>
-      <button onClick={sendJoinRequest}>TAK</button>
-      <button>NIE</button>
+      <button onClick={sendJoinRequest} data-testid="yes">
+        TAK
+      </button>
+      <button data-testid="no">NIE</button>
     </>
   );
 

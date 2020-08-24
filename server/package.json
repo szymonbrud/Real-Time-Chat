@@ -5,9 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon start.js",
-    "testCypress": "nodemon start.js",
     "test": "jest --watch",
-    "bat": "start start.bat"
+    "test:cy": "nodemon start.js"
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^1.2.1",
