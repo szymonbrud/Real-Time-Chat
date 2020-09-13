@@ -1,7 +1,7 @@
 const express = require('express');
 const router = new express.Router();
 import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
+import mongoose, {Mongoose, mongo} from 'mongoose';
 
 import verifyUser from './verifyUser';
 import {AllMessages, RoomsData, getAllRooms, checkError} from '../databaseControll';
@@ -107,7 +107,6 @@ router.post('/createInvade', [urlencodedParser], (req, res) => {
 });
 
 router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
-  console.log('it is actualizate?');
   const {key} = req.body;
 
   const roomData = checkValidateInvadedKeys(key);
@@ -162,6 +161,30 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
   } else {
     res.setHeader('Content-Type', 'application/json');
     res.send({error: true});
+  }
+});
+
+router.post('/deleteRoom', [urlencodedParser, verifyUser], (req, res) => {
+  const {roomId} = req.body;
+  const {userId} = req;
+
+  if (roomId) {
+    RoomsData.findOne({userId}, (err, usersRoomsData) => {
+      console.log(usersRoomsData);
+      const roomIdToDelete = usersRoomsData.rooms.findIndex(
+        (room) => new mongoose.Types.ObjectId(room.roomId).toHexString() === roomId,
+      );
+
+      usersRoomsData.rooms.splice(roomIdToDelete, 1);
+
+      usersRoomsData.save((err) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.send({status: 'OK'});
+      });
+    });
+  } else {
+    res.setHeader('Content-Type', 'application/json');
+    res.send({status: 'err'});
   }
 });
 

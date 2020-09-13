@@ -2,6 +2,7 @@ import { useState, useEffect, RefObject, useRef } from 'react';
 
 import useSocketConnect from './socketHooks';
 import useAuthentication from 'authentication/authenticationHooks';
+import { setRoom } from 'context/joinContext/__mocks__';
 
 interface roomInterface {
   roomName: string;
@@ -18,14 +19,14 @@ interface messageInterface {
 }
 
 interface currentRoomInterface {
-  roomName: string;
-  roomId: string;
+  roomName?: string;
+  roomId?: string;
 }
 
 const useChatPage = () => {
   const [rooms, setRooms] = useState<roomInterface[]>([]);
   const [messages, setMessages] = useState<messageInterface[]>([]);
-  const [currentRoom, setCurrentRoom] = useState<currentRoomInterface>();
+  const [currentRoom, setCurrentRoom] = useState<null | { roomName: string; roomId: string }>(null);
   const [invadeLink, setInvadeLink] = useState('');
   const [isVisibleCreateNewRoom, setIsVisibleCreateNewRoom] = useState(false);
 
@@ -126,6 +127,29 @@ const useChatPage = () => {
     });
   };
 
+  const deleteRoom = () => {
+    userTokenId((token: string) => {
+      fetch('http://localhost:5000/deleteRoom', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          roomId: currentRoom?.roomId,
+        }),
+      })
+        .then(data => data.json())
+        .then(e => {
+          if (e.status === 'OK') {
+            console.log(e);
+          }
+        });
+    });
+    setRooms(prev => prev.filter(item => item._id !== currentRoom?.roomId));
+    setCurrentRoom(null);
+  };
+
   useEffect(() => {
     if (messageWrapperRef.current) {
       messageWrapperRef.current.scrollTop = messageWrapperRef.current.scrollHeight;
@@ -150,6 +174,7 @@ const useChatPage = () => {
     messageWrapperRef,
     isVisibleCreateNewRoom,
     createNewRoomInputRef,
+    deleteRoom,
   };
 };
 

@@ -334,4 +334,51 @@ describe('Testing router.js', () => {
       });
     });
   });
+
+  describe('→Testing /deleteRoom', () => {
+    beforeAll(async () => {
+      const m = new RoomsData({
+        userId: 'D3czjdfe',
+        rooms: [
+          {
+            roomName: 'Janowiańsko',
+            roomId: new mongoose.Types.ObjectId('5f2825db31595c1748b5d41c'),
+          },
+          {
+            roomName: 'Hetmanowisko',
+            roomId: new mongoose.Types.ObjectId('5f2825db31595c1748b5d41a'),
+          },
+        ],
+      });
+      userId: await m.save((err, d) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    });
+
+    afterAll(async () => {
+      await RoomsData.deleteOne({}, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    });
+    it('Should delete the room from my user database', (done) => {
+      request(app)
+        .post('/deleteRoom')
+        .send({roomId: '5f2825db31595c1748b5d41c'})
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.status).toEqual('OK');
+
+          RoomsData.findOne({userId: 'D3czjdfe'}, (err, e) => {
+            expect(e.rooms[0].roomName).toEqual('Hetmanowisko');
+          });
+        })
+        .end(done);
+    });
+  });
 });

@@ -74,6 +74,18 @@ describe('Testing /room', () => {
       'anonymus has joined!',
     );
   });
+
+  it.only('Delete room', () => {
+    createANewRoom('Wi');
+
+    cy.contains('Wi').click();
+
+    cy.wait(1000);
+
+    cy.contains('Delete room').click();
+
+    cy.wait(2000);
+  });
 });
 
 //TODO: sprawdzić jaka jest najlepsza struktura dla czyrpess

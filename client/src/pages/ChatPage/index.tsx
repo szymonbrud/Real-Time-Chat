@@ -42,10 +42,13 @@ const ChatPage = () => {
     messageWrapperRef,
     isVisibleCreateNewRoom,
     createNewRoomInputRef,
+    deleteRoom,
   } = indexHooks();
   const { textInputRef, triggerSend, sendMessage } = useSocketConnect(setMessages);
   const { logout, userId } = useAuthentication();
   useStartHooks(setMessages);
+
+  console.log(rooms);
 
   return (
     <>
@@ -59,9 +62,8 @@ const ChatPage = () => {
       <FlexDiv>
         <LeftBar>
           <NewButton onClick={showNewRoom}>Create a new room</NewButton>
-          {rooms.length === 0 ? (
-            <h1>ładowanie pokoi</h1>
-          ) : (
+
+          {rooms && rooms.length > 0 ? (
             rooms.map(e => (
               <RoomButton
                 className="room"
@@ -71,6 +73,8 @@ const ChatPage = () => {
                 {e.roomName}
               </RoomButton>
             ))
+          ) : (
+            <h1>ładowanie pokoi</h1>
           )}
         </LeftBar>
         {invadeLink && (
@@ -93,6 +97,7 @@ const ChatPage = () => {
           {currentRoom && (
             <MessagesMainWrapper>
               <button onClick={invadeToRoom}>Invate to room</button>
+              <button onClick={deleteRoom}>Delete room</button>
               <h1>{currentRoom?.roomName}</h1>
               {/* <MessagesWrapper ref={messageWrapperRef}> */}
               <MessagesWrapper data-testid="messageWrapper" ref={messageWrapperRef}>

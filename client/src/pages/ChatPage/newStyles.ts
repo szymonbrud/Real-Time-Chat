@@ -49,6 +49,7 @@ export const InvateResponseWrapper = styled.div`
   justify-content: center;
   flex-direction: column;
   border: 3px solid black;
+  z-index: 20;
 `;
 
 export const TextToCopy = styled.p`
