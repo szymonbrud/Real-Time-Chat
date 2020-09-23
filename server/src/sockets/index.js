@@ -1,4 +1,4 @@
-import {createUser, getUser, removeUser} from '../users';
+import {createUser, getUser, removeUser, users, leaveFromRoom} from '../users';
 import {sendMessageDatabase} from '../databaseControll';
 
 export const mainSocket = (io) =>
@@ -9,6 +9,8 @@ export const mainSocket = (io) =>
       console.log('join socket');
 
       // console.log(userId, roomId, name);
+      console.log('JOIN: ------↓-------');
+      console.log(users);
 
       if (name.length === 0 && roomId.length === 0) {
         return callback('error');
@@ -39,8 +41,14 @@ export const mainSocket = (io) =>
 
     socket.on('disconnectRoom', ({lastRoomId}) => {
       console.log(`leave: ${lastRoomId}`);
+      leaveFromRoom(socket.id);
       socket.leave(lastRoomId);
-      console.log(Object.keys(socket.rooms));
+      console.log('LEAVE: ------↓-------');
+      console.log(users);
+      console.log('------↓------- SOCKET');
+      console.log(socket.rooms);
+      console.log(lastRoomId);
+      // console.log(Object.keys(socket.rooms));
     });
 
     socket.on('sendMessage', ({text}, callback) => {

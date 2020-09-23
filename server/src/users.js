@@ -1,4 +1,4 @@
-const users = [];
+export const users = [];
 
 // TODO: jesli dołaczanie zależy od nicku to jest totalnie bez sensu
 
@@ -48,6 +48,11 @@ export const removeUser = (id) => {
 
 export const getOnlineUsers = (room) =>
   users.filter((user) => user.room === room).map((user) => user.username);
+
+export const leaveFromRoom = (id) => {
+  const indexUserToLeave = users.findIndex((user) => user.id === id);
+  users[indexUserToLeave].room = '';
+};
 
 // script
 // 1) musi działać jeśli otworzymy tę samą rozmowę na 2 kontach

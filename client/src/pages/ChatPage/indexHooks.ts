@@ -57,7 +57,7 @@ const useChatPage = () => {
 
   const getRoomsMessage = (roomId: string, roomName: string) => {
     if (currentRoom?.roomId !== roomId) {
-      diconectRoom(currentRoom?.roomId);
+      if (currentRoom?.roomId) diconectRoom(currentRoom?.roomId);
       setMessages([]);
       setCurrentRoom({ roomName, roomId });
       userTokenId((token: string) => {
@@ -178,6 +178,12 @@ const useChatPage = () => {
     });
   };
 
+  const backToDefaultView = () => {
+    diconectRoom(currentRoom?.roomId);
+    setCurrentRoom(null);
+    setMessages([]);
+  };
+
   useEffect(() => {
     if (messageWrapperRef.current) {
       messageWrapperRef.current.scrollTop = messageWrapperRef.current.scrollHeight;
@@ -207,6 +213,7 @@ const useChatPage = () => {
     switchVisibleChangeRoomName: () => setIsVisibleChangeRoomName(prev => !prev),
     isVisibleChangeRoomName,
     changeRoomNameInputRef,
+    backToDefaultView,
   };
 };
 

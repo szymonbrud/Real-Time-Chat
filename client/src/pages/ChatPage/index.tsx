@@ -47,6 +47,7 @@ const ChatPage = () => {
     isVisibleChangeRoomName,
     switchVisibleChangeRoomName,
     changeRoomNameInputRef,
+    backToDefaultView,
   } = indexHooks();
   const { textInputRef, triggerSend, sendMessage } = useSocketConnect(setMessages);
   const { logout, userId } = useAuthentication();
@@ -107,6 +108,7 @@ const ChatPage = () => {
         <MainWrapper>
           {currentRoom && (
             <MessagesMainWrapper>
+              <button onClick={backToDefaultView}>back</button>
               <button onClick={invadeToRoom}>Invate to room</button>
               <button onClick={deleteRoom}>Delete room</button>
               <button onClick={switchVisibleChangeRoomName}>Change room name</button>
