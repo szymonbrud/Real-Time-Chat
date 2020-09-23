@@ -1,7 +1,7 @@
 const express = require('express');
 const router = new express.Router();
 import bodyParser from 'body-parser';
-import mongoose, {Mongoose, mongo} from 'mongoose';
+import mongoose from 'mongoose';
 
 import verifyUser from './verifyUser';
 import {AllMessages, RoomsData, getAllRooms, checkError} from '../databaseControll';
@@ -37,7 +37,6 @@ router.post('/getMessages', [urlencodedParser, verifyUser], (req, res) => {
 });
 
 router.post('/createRoom', [urlencodedParser, verifyUser], (req, res) => {
-  console.log('hello');
   const {roomName} = req.body;
 
   if (roomName === '' || !roomName) {
@@ -81,9 +80,6 @@ const generateInvade = (roomId, roomName) => {
 };
 
 const checkValidateInvadedKeys = (key) => {
-  console.log(invadeKeys);
-  console.log('---');
-  console.log(key);
   const find = invadeKeys.find((e) => e.key === key);
   if (find) {
     const findIndex = invadeKeys.findIndex((e) => e.key === key);
@@ -170,7 +166,6 @@ router.post('/deleteRoom', [urlencodedParser, verifyUser], (req, res) => {
 
   if (roomId) {
     RoomsData.findOne({userId}, (err, usersRoomsData) => {
-      console.log(usersRoomsData);
       const roomIdToDelete = usersRoomsData.rooms.findIndex(
         (room) => new mongoose.Types.ObjectId(room.roomId).toHexString() === roomId,
       );
@@ -188,6 +183,31 @@ router.post('/deleteRoom', [urlencodedParser, verifyUser], (req, res) => {
   }
 });
 
+router.post('/editNameRoom', [urlencodedParser, verifyUser], (req, res) => {
+  const {newRoomName, roomId} = req.body;
+
+  console.log('HEHEHEHE');
+
+  console.log(newRoomName);
+  console.log(roomId);
+
+  if (roomId && newRoomName) {
+    RoomsData.updateMany(
+      {rooms: {$elemMatch: {roomId: new mongoose.Types.ObjectId(roomId)}}},
+      {
+        'rooms.$.roomName': newRoomName,
+      },
+      (err, rooms) => {
+        console.log(rooms);
+        res.setHeader('Content-Type', 'application/json');
+        res.send({status: 'OK'});
+      },
+    );
+  } else {
+    res.setHeader('Content-Type', 'application/json');
+    res.send({status: 'incomplete data'});
+  }
+});
 export default router;
 
 // TODO: 1) zrobić tak aby tworzył się nowy profil użytkownika gdy chce dołaczyć do
@@ -208,3 +228,8 @@ export default router;
 // TODO: 12) zrobić review i testy
 // TOOD: 12.1) Jakie testy mogę przeprowadzić po obu stronach
 // TODO: 13) Napisać skryp basch który by mi włączył mongoodb przed nodemonem
+
+// RoomsData.find({rooms: {$elemMatch: {roomName: 'asdf'}}}, (err, rooms) => {
+//   console.log(err);
+//   console.log(rooms);
+// });

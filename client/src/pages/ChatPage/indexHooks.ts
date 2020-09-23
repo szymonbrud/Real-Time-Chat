@@ -6,7 +6,7 @@ import { setRoom } from 'context/joinContext/__mocks__';
 
 interface roomInterface {
   roomName: string;
-  _id: string;
+  roomId: string;
 }
 
 interface messageInterface {
@@ -29,9 +29,11 @@ const useChatPage = () => {
   const [currentRoom, setCurrentRoom] = useState<null | { roomName: string; roomId: string }>(null);
   const [invadeLink, setInvadeLink] = useState('');
   const [isVisibleCreateNewRoom, setIsVisibleCreateNewRoom] = useState(false);
+  const [isVisibleChangeRoomName, setIsVisibleChangeRoomName] = useState(false);
 
   const messageWrapperRef: RefObject<HTMLDivElement> = useRef(null);
   const createNewRoomInputRef: RefObject<HTMLInputElement> = useRef(null);
+  const changeRoomNameInputRef: RefObject<HTMLInputElement> = useRef(null);
 
   const { joinToRoomSocket, diconectRoom } = useSocketConnect(setMessages, setCurrentRoom);
   const { userTokenId } = useAuthentication();
@@ -146,8 +148,34 @@ const useChatPage = () => {
           }
         });
     });
-    setRooms(prev => prev.filter(item => item._id !== currentRoom?.roomId));
+    setRooms(prev => prev.filter(item => item.roomId !== currentRoom?.roomId));
     setCurrentRoom(null);
+  };
+
+  const changeRoomName = () => {
+    if (changeRoomNameInputRef && changeRoomNameInputRef.current && currentRoom) {
+      setCurrentRoom({
+        roomName: changeRoomNameInputRef?.current?.value,
+        roomId: currentRoom.roomId,
+      });
+    }
+    userTokenId((token: string) => {
+      fetch('http://localhost:5000/editNameRoom', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          roomId: currentRoom?.roomId,
+          newRoomName: changeRoomNameInputRef.current?.value,
+        }),
+      })
+        .then(data => data.json())
+        .then(e => {
+          console.log(e);
+        });
+    });
   };
 
   useEffect(() => {
@@ -175,6 +203,10 @@ const useChatPage = () => {
     isVisibleCreateNewRoom,
     createNewRoomInputRef,
     deleteRoom,
+    changeRoomName,
+    switchVisibleChangeRoomName: () => setIsVisibleChangeRoomName(prev => !prev),
+    isVisibleChangeRoomName,
+    changeRoomNameInputRef,
   };
 };
 

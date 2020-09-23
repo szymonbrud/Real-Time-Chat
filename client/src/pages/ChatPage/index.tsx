@@ -43,6 +43,10 @@ const ChatPage = () => {
     isVisibleCreateNewRoom,
     createNewRoomInputRef,
     deleteRoom,
+    changeRoomName,
+    isVisibleChangeRoomName,
+    switchVisibleChangeRoomName,
+    changeRoomNameInputRef,
   } = indexHooks();
   const { textInputRef, triggerSend, sendMessage } = useSocketConnect(setMessages);
   const { logout, userId } = useAuthentication();
@@ -62,13 +66,12 @@ const ChatPage = () => {
       <FlexDiv>
         <LeftBar>
           <NewButton onClick={showNewRoom}>Create a new room</NewButton>
-
           {rooms && rooms.length > 0 ? (
             rooms.map(e => (
               <RoomButton
                 className="room"
                 data-testid="roomButton"
-                onClick={() => joinToRoom(e._id, e.roomName)}
+                onClick={() => joinToRoom(e.roomId, e.roomName)}
               >
                 {e.roomName}
               </RoomButton>
@@ -93,11 +96,20 @@ const ChatPage = () => {
             <button onClick={() => setInvadeLink('')}>wyjście</button>
           </InvateResponseWrapper>
         )}
+        {isVisibleChangeRoomName && (
+          <InvateResponseWrapper>
+            <p>Change room to</p>
+            <input type="text" ref={changeRoomNameInputRef} />
+            <button onClick={changeRoomName}>Change</button>
+            <button onClick={switchVisibleChangeRoomName}>exit</button>
+          </InvateResponseWrapper>
+        )}
         <MainWrapper>
           {currentRoom && (
             <MessagesMainWrapper>
               <button onClick={invadeToRoom}>Invate to room</button>
               <button onClick={deleteRoom}>Delete room</button>
+              <button onClick={switchVisibleChangeRoomName}>Change room name</button>
               <h1>{currentRoom?.roomName}</h1>
               {/* <MessagesWrapper ref={messageWrapperRef}> */}
               <MessagesWrapper data-testid="messageWrapper" ref={messageWrapperRef}>

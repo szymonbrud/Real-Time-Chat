@@ -1,4 +1,4 @@
-import {Schema} from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 
 export const UsersSchema = new Schema({
   userId: {type: String, required: true},
@@ -17,7 +17,7 @@ export const RoomsDataSchema = new Schema({
   rooms: [
     {
       roomName: {type: String, required: true},
-      roomId: Schema.Types.ObjectId,
+      roomId: {type: Schema.Types.ObjectId, required: true, default: new mongoose.Types.ObjectId()},
     },
   ],
 });

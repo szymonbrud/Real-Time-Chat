@@ -174,7 +174,7 @@ describe('Testing router.js', () => {
       });
 
       afterAll(async () => {
-        await AllMessages.deleteOne({}, (err, i) => {
+        await AllMessages.deleteMany({}, (err, i) => {
           if (err) console.log(err);
         });
       });
@@ -350,7 +350,8 @@ describe('Testing router.js', () => {
           },
         ],
       });
-      userId: await m.save((err, d) => {
+
+      await m.save((err, d) => {
         if (err) {
           console.log(err);
         }
@@ -376,6 +377,60 @@ describe('Testing router.js', () => {
 
           RoomsData.findOne({userId: 'D3czjdfe'}, (err, e) => {
             expect(e.rooms[0].roomName).toEqual('Hetmanowisko');
+          });
+        })
+        .end(done);
+    });
+  });
+
+  describe('→Testing /editNameRoom', () => {
+    beforeAll(async () => {
+      const room = new RoomsData({
+        userId: 'envczoqiuwer',
+        rooms: [
+          {
+            roomName: 'Halionamy',
+            roomId: new mongoose.Types.ObjectId('5f2825db31595c1348b5d41c'),
+          },
+        ],
+      });
+
+      const room2 = new RoomsData({
+        userId: 'szy',
+        rooms: [
+          {
+            roomName: 'b',
+            roomId: new mongoose.Types.ObjectId('5f2825db31595c1748b5d432'),
+          },
+        ],
+      });
+
+      await room.save((err) => {
+        if (err) console.log(err);
+      });
+
+      await room2.save((err) => {
+        if (err) console.log(err);
+      });
+    });
+
+    afterEach(async () => {
+      RoomsData.deleteMany({}, (err) => {
+        if (err) console.log(err);
+      });
+    });
+
+    it('Change name of the room', (done) => {
+      request(app)
+        .post('/editNameRoom')
+        .send({roomId: '5f2825db31595c1348b5d41c', newRoomName: 'edited name'})
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          RoomsData.find({}, (err, data) => {
+            expect(data[0].rooms[0].roomName).toEqual('edited name');
+            expect(data[1].rooms[0].roomName).not.toEqual('edited name');
           });
         })
         .end(done);

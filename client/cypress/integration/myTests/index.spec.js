@@ -75,7 +75,7 @@ describe('Testing /room', () => {
     );
   });
 
-  it.only('Delete room', () => {
+  it('Delete room', () => {
     createANewRoom('Wi');
 
     cy.contains('Wi').click();
@@ -85,6 +85,25 @@ describe('Testing /room', () => {
     cy.contains('Delete room').click();
 
     cy.wait(2000);
+  });
+
+  it.only('Edit room name', () => {
+    createANewRoom('HelloRoom');
+
+    cy.contains('HelloRoom').click();
+
+    cy.wait(1000);
+
+    cy.contains('Change room name').click();
+    cy.get('.sc-fznKkj > input').type('cat room');
+    cy.get('.sc-fznKkj > :nth-child(3)').click();
+    cy.wait(500);
+    cy.contains('exit').click();
+
+    cy.contains('cat room');
+
+    cy.reload();
+    cy.contains('cat room');
   });
 });
 
