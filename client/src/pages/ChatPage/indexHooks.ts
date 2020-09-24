@@ -30,6 +30,7 @@ const useChatPage = () => {
   const [invadeLink, setInvadeLink] = useState('');
   const [isVisibleCreateNewRoom, setIsVisibleCreateNewRoom] = useState(false);
   const [isVisibleChangeRoomName, setIsVisibleChangeRoomName] = useState(false);
+  const [imageData, setImageData] = useState();
 
   const messageWrapperRef: RefObject<HTMLDivElement> = useRef(null);
   const createNewRoomInputRef: RefObject<HTMLInputElement> = useRef(null);
@@ -121,9 +122,8 @@ const useChatPage = () => {
       })
         .then(data => data.json())
         .then(e => {
-          if (e.status === 'OK') {
-            setInvadeLink(e.link);
-          }
+          setImageData(e.image);
+          setInvadeLink(e.link);
         })
         .catch(err => console.log(err));
     });
@@ -214,6 +214,7 @@ const useChatPage = () => {
     isVisibleChangeRoomName,
     changeRoomNameInputRef,
     backToDefaultView,
+    imageData,
   };
 };
 

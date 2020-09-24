@@ -1,5 +1,8 @@
 const express = require('express');
 const router = new express.Router();
+
+import axios from 'axios';
+
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
@@ -67,16 +70,24 @@ router.post('/createRoom', [urlencodedParser, verifyUser], (req, res) => {
 
 const invadeKeys = [];
 
-const generateInvade = (roomId, roomName) => {
-  let key = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < 10; i++) {
-    key += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
+const generateInvade = (roomId, roomName, userId) => {
+  const findedInvade = invadeKeys.find((element) => {
+    if (element.roomId === roomId && element.userId === userId) return element;
+  });
 
-  invadeKeys.push({roomId, key, roomName});
-  return key;
+  if (findedInvade) {
+    return findedInvade.key;
+  } else {
+    let key = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 10; i++) {
+      key += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    invadeKeys.push({roomId, key, roomName, userId});
+    return key;
+  }
 };
 
 const checkValidateInvadedKeys = (key) => {
@@ -88,17 +99,27 @@ const checkValidateInvadedKeys = (key) => {
   return find;
 };
 
-router.post('/createInvade', [urlencodedParser], (req, res) => {
+router.post('/createInvade', [urlencodedParser, verifyUser], (req, res) => {
   const {roomId, roomName} = req.body;
+  const {userId} = req;
 
   if (!roomId || !roomName || roomId === '' || roomName === '') {
     res.send({status: 'error'});
     res.end();
   } else {
-    const key = generateInvade(roomId, roomName);
-    res.setHeader('Content-Type', 'application/json');
-    res.send({status: 'OK', link: `http://localhost:3000/join/${key}/${roomName}`});
-    res.end();
+    const key = generateInvade(roomId, roomName, userId);
+
+    const link = `http://localhost:3000/join/${key}/${roomName}`;
+
+    axios
+      .get(`https://api.qrserver.com/v1/create-qr-code/?data=${link}&size=150x150`, {
+        responseType: 'arraybuffer',
+      })
+      .then((response) => Buffer.from(response.data, 'binary').toString('base64'))
+      .then((e) => {
+        res.send({status: 'OK', link, image: e});
+        res.end();
+      });
   }
 });
 

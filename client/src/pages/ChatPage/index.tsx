@@ -48,6 +48,7 @@ const ChatPage = () => {
     switchVisibleChangeRoomName,
     changeRoomNameInputRef,
     backToDefaultView,
+    imageData,
   } = indexHooks();
   const { textInputRef, triggerSend, sendMessage } = useSocketConnect(setMessages);
   const { logout, userId } = useAuthentication();
@@ -86,6 +87,7 @@ const ChatPage = () => {
             <TextToCopy data-testid="textToCopy" className="he">
               {invadeLink}
             </TextToCopy>
+            <img src={`data:image/png;base64, ${imageData}`} />
             <CopyButton
               onClick={() => {
                 navigator.clipboard.writeText(invadeLink);
