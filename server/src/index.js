@@ -23,14 +23,32 @@ if (env.NODE_ENV === 'test') {
   databaseName = 'realtimechat';
 }
 
-mongoose.connect(`mongodb://localhost/${databaseName}`, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// if (env.NODE_ENV === 'test' || env.npm_lifecycle_event === 'test:cy') {
+//   mongoose.connect(`mongodb://localhost/${databaseName}`, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   });
+// } else {
+//   mongoose.connect(
+//     `mongodb+srv://szymonqqaz:haslohaslo22@cluser0.cidkc.mongodb.net/realtimechat?retryWrites=true&w=majority`,
+//     {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     },
+//   );
+// }
+
+mongoose.connect(
+  `mongodb+srv://szymonqqaz:haslohaslo22@cluser0.cidkc.mongodb.net/realtimechat?retryWrites=true&w=majority`,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+);
 
 mongoose.connection
   .once('open', () => {
-    // console.log('connect with mongodb');
+    console.log('connect with mongodb');
   })
   .on('error', (err) => {
     console.log(err);
