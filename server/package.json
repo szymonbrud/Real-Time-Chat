@@ -6,13 +6,16 @@
   "scripts": {
     "start": "nodemon start.js",
     "test": "jest --watch",
+    "test:nw": "jest",
     "test:cy": "nodemon start.js"
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^1.2.1",
     "eslint": "^7.4.0",
     "eslint-config-google": "^0.14.0",
+    "husky": "^4.3.0",
     "jest": "^26.0.1",
+    "lint-staged": "^10.4.0",
     "nodemon": "^2.0.4"
   },
   "dependencies": {
@@ -32,5 +35,17 @@
     "mongoose": "^5.9.24",
     "socket.io": "^2.3.0",
     "supertest": "^4.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn test:nw && lint-staged",
+      "pre-push": "yarn test:nw && lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "eslint . --fix",
+      "git add ."
+    ]
   }
 }

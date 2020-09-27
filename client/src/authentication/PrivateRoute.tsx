@@ -1,9 +1,8 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import useAuthentication from 'authentication/authenticationHooks';
 
 import LoginPage from 'pages/LoginPage';
-import { render } from '@testing-library/react';
 
 enum authenicationProgress {
   loading = 'loading',

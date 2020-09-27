@@ -2,7 +2,14 @@ import { useState, useEffect, RefObject, useRef } from 'react';
 
 import useSocketConnect from './socketHooks';
 import useAuthentication from 'authentication/authenticationHooks';
-import { setRoom } from 'context/joinContext/__mocks__';
+
+let URL: string;
+
+if (window.location.hostname === 'localhost') {
+  URL = 'http://localhost:5000/';
+} else {
+  URL = 'https://real-time-chat-backend.herokuapp.com/';
+}
 
 interface roomInterface {
   roomName: string;
@@ -26,7 +33,10 @@ interface currentRoomInterface {
 const useChatPage = () => {
   const [rooms, setRooms] = useState<roomInterface[]>([]);
   const [messages, setMessages] = useState<messageInterface[]>([]);
-  const [currentRoom, setCurrentRoom] = useState<null | { roomName: string; roomId: string }>(null);
+  const [currentRoom, setCurrentRoom] = useState<null | {
+    roomName: string;
+    roomId: string;
+  }>(null);
   const [invadeLink, setInvadeLink] = useState('');
   const [isVisibleCreateNewRoom, setIsVisibleCreateNewRoom] = useState(false);
   const [isVisibleChangeRoomName, setIsVisibleChangeRoomName] = useState(false);
@@ -41,7 +51,7 @@ const useChatPage = () => {
 
   const getRoomsByDatabase = () => {
     userTokenId((token: string) => {
-      fetch('http://localhost:5000/getRooms', {
+      fetch(`${URL}getRooms`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +72,7 @@ const useChatPage = () => {
       setMessages([]);
       setCurrentRoom({ roomName, roomId });
       userTokenId((token: string) => {
-        fetch('http://localhost:5000/getMessages', {
+        fetch(`${URL}getMessages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -91,7 +101,7 @@ const useChatPage = () => {
     } else if (roomName) {
       userTokenId((token: string) => {
         console.log('send');
-        fetch('http://localhost:5000/createRoom', {
+        fetch(`${URL}createRoom`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -109,7 +119,7 @@ const useChatPage = () => {
 
   const invadeToRoom = () => {
     userTokenId((token: string) => {
-      fetch('http://localhost:5000/createInvade', {
+      fetch(`${URL}createInvade`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +141,7 @@ const useChatPage = () => {
 
   const deleteRoom = () => {
     userTokenId((token: string) => {
-      fetch('http://localhost:5000/deleteRoom', {
+      fetch(`${URL}deleteRoom`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -160,7 +170,7 @@ const useChatPage = () => {
       });
     }
     userTokenId((token: string) => {
-      fetch('http://localhost:5000/editNameRoom', {
+      fetch(`${URL}editNameRoom`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -192,6 +202,7 @@ const useChatPage = () => {
 
   useEffect(() => {
     getRoomsByDatabase();
+    // eslint-disable-next-line
   }, []);
 
   return {

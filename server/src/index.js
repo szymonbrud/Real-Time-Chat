@@ -14,6 +14,8 @@ const mainRoute = new express.Router();
 
 let databaseName = '';
 
+const hello = 'he';
+
 if (env.NODE_ENV === 'test') {
   databaseName = 'realtimechat_test';
 } else if (env.npm_lifecycle_event === 'test:cy') {
@@ -30,7 +32,7 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, {
 
 mongoose.connection
   .once('open', () => {
-    // console.log('connect with mongodb');
+    console.log('connect with mongodb');
   })
   .on('error', (err) => {
     console.log(err);

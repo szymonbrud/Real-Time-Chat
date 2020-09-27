@@ -1,4 +1,4 @@
-import { useEffect, useRef, RefObject, createRef } from 'react';
+import { useRef, RefObject } from 'react';
 
 import { socket } from './useStartHooks';
 import useAuthentication from 'authentication/authenticationHooks';

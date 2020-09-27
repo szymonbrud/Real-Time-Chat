@@ -17,6 +17,7 @@
     "@types/socket.io-client": "^1.4.33",
     "@types/styled-components": "^5.1.0",
     "cypress": "^4.12.1",
+    "dotenv": "^8.2.0",
     "firebase": "^7.15.5",
     "global": "^4.4.0",
     "gsap": "^3.3.4",

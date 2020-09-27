@@ -51,7 +51,7 @@ const ChatPage = () => {
     imageData,
   } = indexHooks();
   const { textInputRef, triggerSend, sendMessage } = useSocketConnect(setMessages);
-  const { logout, userId } = useAuthentication();
+  const { logout } = useAuthentication();
   useStartHooks(setMessages);
 
   console.log(rooms);
@@ -87,7 +87,7 @@ const ChatPage = () => {
             <TextToCopy data-testid="textToCopy" className="he">
               {invadeLink}
             </TextToCopy>
-            <img src={`data:image/png;base64, ${imageData}`} />
+            <img src={`data:image/png;base64, ${imageData}`} alt="qr code" />
             <CopyButton
               onClick={() => {
                 navigator.clipboard.writeText(invadeLink);
