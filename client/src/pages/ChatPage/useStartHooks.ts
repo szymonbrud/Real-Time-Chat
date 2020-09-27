@@ -13,14 +13,18 @@ if (window.location.hostname === 'localhost') {
 }
 
 const useStartHooks = (setMessages: Function) => {
-  const { userName, userId } = useAuthentication();
+  const { userName } = useAuthentication();
 
   const socketMessages = () => {
     socket.on('message', ({ user, text }: { user: string; text: string }) => {
       setMessages &&
         setMessages((message: any) => [
           ...message,
-          { isReceived: user !== userName, senderName: user, content: text },
+          {
+            isReceived: user !== userName,
+            senderName: user,
+            content: text,
+          },
         ]);
     });
   };
@@ -29,6 +33,7 @@ const useStartHooks = (setMessages: Function) => {
     socket = io(URL);
 
     socketMessages();
+    // eslint-disable-next-line
   }, []);
 };
 

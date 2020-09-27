@@ -14,6 +14,8 @@ const mainRoute = new express.Router();
 
 let databaseName = '';
 
+const hello = 'he';
+
 if (env.NODE_ENV === 'test') {
   databaseName = 'realtimechat_test';
 } else if (env.npm_lifecycle_event === 'test:cy') {
@@ -38,13 +40,18 @@ if (env.NODE_ENV === 'test') {
 //   );
 // }
 
-mongoose.connect(
-  `mongodb+srv://szymonqqaz:haslohaslo22@cluser0.cidkc.mongodb.net/realtimechat?retryWrites=true&w=majority`,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-);
+// mongoose.connect(
+//   `mongodb+srv://szymonqqaz:haslohaslo22@cluser0.cidkc.mongodb.net/realtimechat?retryWrites=true&w=majority`,
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   },
+// );
+
+mongoose.connect(`mongodb://localhost/${databaseName}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 mongoose.connection
   .once('open', () => {

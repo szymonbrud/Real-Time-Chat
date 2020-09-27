@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 import useInitialFirebase from 'authentication/initalFirebase';
 
@@ -14,7 +15,7 @@ const useAuthentication = () => {
   useInitialFirebase();
 
   const provider = new firebase.auth.GoogleAuthProvider();
-  const [isUserLogin, setIsUserLogin] = useState('unconfirmed');
+  const [isUserLogin, setIsUserLogin] = useState('unconfifrfmed');
 
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');

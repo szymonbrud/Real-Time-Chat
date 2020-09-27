@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import useAuthentication from 'authentication/authenticationHooks';
-import { Background, Text, AcceptButton } from './styles';
+import { Background, Text } from './styles';
 
 enum authenicationProgress {
   loading = 'loading',
@@ -13,6 +13,8 @@ enum authenicationProgress {
 
 const LoginPage = () => {
   const { loginWithGoogle, isUserLogin, loginWithAnonymuss } = useAuthentication();
+
+  console.log('open login');
 
   if (isUserLogin === authenicationProgress.confirmed) {
     return <Redirect to="/room" />;

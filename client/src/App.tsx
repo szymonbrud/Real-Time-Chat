@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import GlobalStyleProvider from 'assets/styles/globalStyles';
 
 import { JoinContextProvider } from 'context/joinContext';
