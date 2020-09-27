@@ -14,8 +14,6 @@ const mainRoute = new express.Router();
 
 let databaseName = '';
 
-const hello = 'he';
-
 if (env.NODE_ENV === 'test') {
   databaseName = 'realtimechat_test';
 } else if (env.npm_lifecycle_event === 'test:cy') {
