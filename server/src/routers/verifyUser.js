@@ -2,6 +2,11 @@ import * as admin from 'firebase-admin';
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
+  // if I want to set data here: ↓
+  // credential: admin.credential.cert({
+  // -- type: 'service_account',
+  // -- project_id: '...'
+  // });
 });
 
 const verifyUser = (req, res, next) => {
