@@ -1,5 +1,5 @@
 import {createUser, getUser, removeUser, users, leaveFromRoom} from '../users';
-import {sendMessageDatabase} from '../databaseControll';
+import {saveMessageDatabase} from '../databaseControll';
 
 export const mainSocket = (io) =>
   io.on('connect', (socket) => {
@@ -61,7 +61,7 @@ export const mainSocket = (io) =>
       socket.to(room).emit('message', {user: username, text: text});
 
       callback();
-      sendMessageDatabase({userName: username, userId, content: text, roomId: room});
+      saveMessageDatabase({userName: username, userId, content: text, roomId: room});
     });
 
     socket.on('disconnect', () => {

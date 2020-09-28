@@ -5,8 +5,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
-import usersRouter from './routers/usersRoute';
-import router from './routers/router';
+import usersRouter from './api/routers/usersRoute';
+import router from './api/routers/router';
 import {mainSocket} from './sockets';
 import {env} from 'process';
 

@@ -6,8 +6,11 @@ import axios from 'axios';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
-import verifyUser from './verifyUser';
-import {AllMessages, RoomsData, getAllRooms, checkError} from '../databaseControll';
+import verifyUser from '../controllers/verifyUser';
+import {AllMessages, RoomsData} from '../../databaseControll';
+import {getRoomsByUser} from '../responses/getRoomsByUser';
+
+import errorHandler from '../responses/errorHandler';
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -16,7 +19,11 @@ router.get('/', (req, res) => {
 });
 
 router.post('/getRooms', [urlencodedParser, verifyUser], (req, res) => {
-  getAllRooms(req.userId, res);
+  getRoomsByUser(req.userId, res);
+});
+
+router.get('/test', (req, res) => {
+  errorHandler({err: 'err test', errorCode: 500, errorDescription: 'Database error', res});
 });
 
 router.post('/getMessages', [urlencodedParser, verifyUser], (req, res) => {
@@ -47,20 +54,28 @@ router.post('/createRoom', [urlencodedParser, verifyUser], (req, res) => {
     res.end();
   } else {
     RoomsData.find({userId: req.userId}, (err, rooms) => {
-      checkError(err, res);
+      if (err) {
+        errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
+      }
 
       const newRoom = new RoomsData({userId: req.userId, rooms: [{roomName: roomName}]});
 
       if (rooms.length === 0) {
         newRoom.save((err, e) => {
-          checkError(err, res);
-          getAllRooms(req.userId, res);
+          if (err) {
+            errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
+          }
+
+          getRoomsByUser(req.userId, res);
         });
       } else {
         RoomsData.update({userId: req.userId}, {$push: {rooms: {roomName: roomName}}}, (err, e) => {
-          checkError(err, res);
+          if (err) {
+            errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
+          }
+
           if (e.ok) {
-            getAllRooms(req.userId, res);
+            getRoomsByUser(req.userId, res);
           }
         });
       }
@@ -130,7 +145,9 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
 
   if (roomData) {
     RoomsData.find({userId: req.userId}, (err, rooms) => {
-      checkError(err, res);
+      if (err) {
+        errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
+      }
 
       const newRoom = new RoomsData({
         userId: req.userId,
@@ -144,7 +161,10 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
 
       if (rooms.length === 0) {
         newRoom.save((err, e) => {
-          checkError(err, res);
+          if (err) {
+            errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
+          }
+
           res.setHeader('Content-Type', 'application/json');
           res.send({status: 'OK'});
         });
@@ -165,7 +185,10 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
               },
             },
             (err, e) => {
-              checkError(err, res);
+              if (err) {
+                errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
+              }
+
               if (e.ok) {
                 res.setHeader('Content-Type', 'application/json');
                 res.send({status: 'OK'});
