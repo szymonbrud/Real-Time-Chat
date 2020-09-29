@@ -1,5 +1,5 @@
-import {createUser, getUser, removeUser, users, leaveFromRoom} from '../users';
-import {saveMessageDatabase} from '../databaseControll';
+import {createUser, getUser, removeUser, users, leaveFromRoom} from 'users';
+import {saveMessageDatabase} from 'databaseControll';
 
 export const mainSocket = (io) =>
   io.on('connect', (socket) => {

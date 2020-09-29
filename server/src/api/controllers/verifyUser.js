@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 
-import errorHandler from '../responses/errorHandler';
+import errorHandler from 'api/responses/errorHandler';
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),

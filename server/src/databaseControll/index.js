@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import {RoomsSchema, MessagesAllSchema} from '../models/Schema';
+import {RoomsSchema, MessagesAllSchema} from 'models/Schema';
 
 export const RoomsData = mongoose.model('RoomsData', RoomsSchema);
 export const AllMessages = mongoose.model('messages', MessagesAllSchema);

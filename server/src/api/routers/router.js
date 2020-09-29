@@ -6,16 +6,20 @@ import axios from 'axios';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
-import verifyUser from '../controllers/verifyUser';
-import {AllMessages, RoomsData} from '../../databaseControll';
-import {getRoomsByUser} from '../responses/getRoomsByUser';
+import verifyUser from 'api/controllers/verifyUser';
+import {AllMessages, RoomsData} from 'databaseControll';
+import {getRoomsByUser} from 'api/responses/getRoomsByUser';
 
-import errorHandler from '../responses/errorHandler';
+import errorHandler from 'api/responses/errorHandler';
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 router.get('/', (req, res) => {
   res.send('Server is up and running!').status(200);
+});
+
+router.get('/test', (req, res) => {
+  res.send('workign!');
 });
 
 router.post('/getRooms', [urlencodedParser, verifyUser], (req, res) => {

@@ -5,9 +5,9 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
-import usersRouter from './api/routers/usersRoute';
-import router from './api/routers/router';
-import {mainSocket} from './sockets';
+import usersRouter from 'api/routers/usersRoute';
+import router from 'api/routers/router';
+import {mainSocket} from 'sockets';
 import {env} from 'process';
 
 const mainRoute = new express.Router();

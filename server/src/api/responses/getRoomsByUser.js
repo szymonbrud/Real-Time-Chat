@@ -1,4 +1,4 @@
-import {RoomsData} from '../../databaseControll';
+import {RoomsData} from 'databaseControll';
 
 export const getRoomsByUser = (roomId, res) => {
   RoomsData.find({userId: roomId}, (err, rooms) => {

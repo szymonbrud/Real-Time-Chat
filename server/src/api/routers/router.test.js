@@ -2,10 +2,10 @@ import request from 'supertest';
 const {MongoClient} = require('mongodb');
 import mongoose from 'mongoose';
 
-import app from '../../index';
-import {RoomsData, AllMessages} from '../../databaseControll';
+import app from 'index';
+import {RoomsData, AllMessages} from 'databaseControll';
 
-jest.mock('../controllers/verifyUser.js');
+jest.mock('api/controllers/verifyUser.js');
 
 const fakerUserId = 'D3czjdfe';
 

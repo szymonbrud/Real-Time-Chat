@@ -9,4 +9,15 @@ module.exports = {
       },
     ],
   ],
+  plugins: [
+    [
+      'module-resolver',
+      {
+        root: ['./src'],
+        alias: {
+          router: './src/api/routers',
+        },
+      },
+    ],
+  ],
 };
