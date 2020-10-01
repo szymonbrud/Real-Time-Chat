@@ -2,90 +2,15 @@ const express = require('express');
 const router = new express.Router();
 
 import axios from 'axios';
-
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
 import verifyUser from 'api/controllers/verifyUser';
 import {AllMessages, RoomsData} from 'databaseControll';
-import {getRoomsByUser} from 'api/responses/getRoomsByUser';
-
-import errorHandler from 'api/responses/errorHandler';
+import {getRoomsByUser} from 'api/responses';
+import {errorHandler} from 'api/responses';
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
-
-router.get('/', (req, res) => {
-  res.send('Server is up and running!').status(200);
-});
-
-router.get('/test', (req, res) => {
-  res.send('workign!');
-});
-
-router.post('/getRooms', [urlencodedParser, verifyUser], (req, res) => {
-  getRoomsByUser(req.userId, res);
-});
-
-router.get('/test', (req, res) => {
-  errorHandler({err: 'err test', errorCode: 500, errorDescription: 'Database error', res});
-});
-
-router.post('/getMessages', [urlencodedParser, verifyUser], (req, res) => {
-  const {roomId} = req.body;
-  AllMessages.find({roomId: roomId}, (err, messages) => {
-    const messagesToSend = [];
-
-    messages.map(({date, _id, senderName, senderId, content, roomId}) => {
-      if (senderId === req.userId) {
-        messagesToSend.push({date, _id, senderName, content, roomId, isSendByMe: true});
-      } else {
-        messagesToSend.push({date, _id, senderName, content, roomId, isSendByMe: false});
-      }
-    });
-
-    res.setHeader('Content-Type', 'application/json');
-    res.send({status: 'OK', messages: messagesToSend});
-  })
-    .sort({date: 1})
-    .limit(30);
-});
-
-router.post('/createRoom', [urlencodedParser, verifyUser], (req, res) => {
-  const {roomName} = req.body;
-
-  if (roomName === '' || !roomName) {
-    res.send({status: 'error'});
-    res.end();
-  } else {
-    RoomsData.find({userId: req.userId}, (err, rooms) => {
-      if (err) {
-        errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
-      }
-
-      const newRoom = new RoomsData({userId: req.userId, rooms: [{roomName: roomName}]});
-
-      if (rooms.length === 0) {
-        newRoom.save((err, e) => {
-          if (err) {
-            errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
-          }
-
-          getRoomsByUser(req.userId, res);
-        });
-      } else {
-        RoomsData.update({userId: req.userId}, {$push: {rooms: {roomName: roomName}}}, (err, e) => {
-          if (err) {
-            errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
-          }
-
-          if (e.ok) {
-            getRoomsByUser(req.userId, res);
-          }
-        });
-      }
-    });
-  }
-});
 
 const invadeKeys = [];
 
@@ -118,13 +43,90 @@ const checkValidateInvadedKeys = (key) => {
   return find;
 };
 
+router.get('/', (req, res) => {
+  res.send('Server is up and running!').status(200);
+});
+
+router.get('/rooms', [urlencodedParser, verifyUser], (req, res) => {
+  getRoomsByUser(req.userId, res);
+});
+
+router.get('/messages/:roomId', [urlencodedParser, verifyUser], (req, res) => {
+  const {roomId} = req.params;
+  AllMessages.find({roomId}, (err, messages) => {
+    if (err) {
+      errorHandler({req, errorCode: 501, errorDescription: 'Error during get messages', err});
+    }
+
+    const messagesToSend = [];
+
+    messages.map(({date, _id, senderName, senderId, content, roomId}) => {
+      if (senderId === req.userId) {
+        messagesToSend.push({date, _id, senderName, content, roomId, isSendByMe: true});
+      } else {
+        messagesToSend.push({date, _id, senderName, content, roomId, isSendByMe: false});
+      }
+    });
+
+    res.setHeader('Content-Type', 'application/json');
+    res.send({status: 'OK', messages: messagesToSend});
+  })
+    .sort({date: 1})
+    .limit(30);
+});
+
+router.post('/createRoom', [urlencodedParser, verifyUser], (req, res) => {
+  const {roomName} = req.body;
+
+  if (roomName === '' || !roomName) {
+    errorHandler({req, errorCode: 400, errorDescription: 'Incomplete request data'});
+  } else {
+    RoomsData.find({userId: req.userId}, (err, rooms) => {
+      if (err) {
+        errorHandler({err, res, errorCode: 500, errorDescription: 'Database error - createRoom'});
+      }
+
+      const newRoom = new RoomsData({userId: req.userId, rooms: [{roomName: roomName}]});
+
+      if (rooms.length === 0) {
+        newRoom.save((err, e) => {
+          if (err) {
+            errorHandler({
+              err,
+              res,
+              errorCode: 500,
+              errorDescription: 'Database error - createRoom',
+            });
+          }
+
+          getRoomsByUser(req.userId, res);
+        });
+      } else {
+        RoomsData.update({userId: req.userId}, {$push: {rooms: {roomName: roomName}}}, (err, e) => {
+          if (err) {
+            errorHandler({
+              err,
+              res,
+              errorCode: 500,
+              errorDescription: 'Database error - createRoom',
+            });
+          }
+
+          if (e.ok) {
+            getRoomsByUser(req.userId, res);
+          }
+        });
+      }
+    });
+  }
+});
+
 router.post('/createInvade', [urlencodedParser, verifyUser], (req, res) => {
   const {roomId, roomName} = req.body;
   const {userId} = req;
 
   if (!roomId || !roomName || roomId === '' || roomName === '') {
-    res.send({status: 'error'});
-    res.end();
+    errorHandler({res, errorDescription: 'Bad data', errorCode: 400});
   } else {
     const key = generateInvade(roomId, roomName, userId);
 
@@ -153,17 +155,17 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
         errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
       }
 
-      const newRoom = new RoomsData({
-        userId: req.userId,
-        rooms: [
-          {
-            roomName: roomData.roomName,
-            _id: new mongoose.Types.ObjectId(roomData.roomId),
-          },
-        ],
-      });
-
       if (rooms.length === 0) {
+        const newRoom = new RoomsData({
+          userId: req.userId,
+          rooms: [
+            {
+              roomName: roomData.roomName,
+              _id: new mongoose.Types.ObjectId(roomData.roomId),
+            },
+          ],
+        });
+
         newRoom.save((err, e) => {
           if (err) {
             errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
@@ -173,10 +175,11 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
           res.send({status: 'OK'});
         });
       } else {
-        const findRoom = rooms[0].rooms.find((e) => e._id.toString() === roomData.roomId);
-        if (findRoom) {
-          res.setHeader('Content-Type', 'application/json');
-          res.send({error: true});
+        const findIsRoomExist = rooms[0].rooms.find(
+          (room) => room._id.toString() === roomData.roomId,
+        );
+        if (findIsRoomExist) {
+          errorHandler({res, errorCode: 409, errorDescription: 'Room is already exist'});
         } else {
           RoomsData.update(
             {userId: req.userId},
@@ -188,12 +191,12 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
                 },
               },
             },
-            (err, e) => {
+            (err, updateResponse) => {
               if (err) {
                 errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
               }
 
-              if (e.ok) {
+              if (updateResponse.ok) {
                 res.setHeader('Content-Type', 'application/json');
                 res.send({status: 'OK'});
               }
@@ -203,12 +206,11 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
       }
     });
   } else {
-    res.setHeader('Content-Type', 'application/json');
-    res.send({error: true});
+    errorHandler({res, errorDescription: 'Bad data', errorCode: 400});
   }
 });
 
-router.post('/deleteRoom', [urlencodedParser, verifyUser], (req, res) => {
+router.delete('/deleteRoom', [urlencodedParser, verifyUser], (req, res) => {
   const {roomId} = req.body;
   const {userId} = req;
 
@@ -231,13 +233,8 @@ router.post('/deleteRoom', [urlencodedParser, verifyUser], (req, res) => {
   }
 });
 
-router.post('/editNameRoom', [urlencodedParser, verifyUser], (req, res) => {
+router.put('/editNameRoom', [urlencodedParser, verifyUser], (req, res) => {
   const {newRoomName, roomId} = req.body;
-
-  console.log('HEHEHEHE');
-
-  console.log(newRoomName);
-  console.log(roomId);
 
   if (roomId && newRoomName) {
     RoomsData.updateMany(
@@ -246,38 +243,12 @@ router.post('/editNameRoom', [urlencodedParser, verifyUser], (req, res) => {
         'rooms.$.roomName': newRoomName,
       },
       (err, rooms) => {
-        console.log(rooms);
         res.setHeader('Content-Type', 'application/json');
         res.send({status: 'OK'});
       },
     );
   } else {
-    res.setHeader('Content-Type', 'application/json');
-    res.send({status: 'incomplete data'});
+    errorHandler({res, errorCode: 400, errorDescription: 'Incomplete data'});
   }
 });
 export default router;
-
-// TODO: 1) zrobić tak aby tworzył się nowy profil użytkownika gdy chce dołaczyć do
-// pokoju lub go stworzyć ✔
-// TODO: 2) zrobić przycisk dołaczania do pokoju który generuje link ✔
-// TODO: 3) zrobić wyskakujący błąd gdy coś pójdzie nie tak ✔
-// TODO: 4) zoribc przekierowanie na front-end ✔
-// TODO: 5) zabezpieczenie aby się nie dało
-// dołączyć to tego samogo pokoju kilka razy przez to samo konto ✔
-// TODO: 6) zrobić tak aby się tego samego linku nie dało urzyć 2 razy ✔
-// TODO: 7) zrobić tak aby wiadomości były wysyłane zależnie czy to są
-// od odbiorcy czy od kogoś innego ✔
-// TODO: 8) zrobić tak aby się nie dało pisać z tego samego konta do
-// samego siebie jako inna osoba tylko aby to było połączone ✔
-// TODO: 10) pomyśleć nad tym aby socket.io nie używał się 2 razy ✔
-// TODO: 11) zrobić auto scrolla ✔
-
-// TODO: 12) zrobić review i testy
-// TOOD: 12.1) Jakie testy mogę przeprowadzić po obu stronach
-// TODO: 13) Napisać skryp basch który by mi włączył mongoodb przed nodemonem
-
-// RoomsData.find({rooms: {$elemMatch: {roomName: 'asdf'}}}, (err, rooms) => {
-//   console.log(err);
-//   console.log(rooms);
-// });

@@ -51,12 +51,11 @@ describe('Testing router.js', () => {
     await db.close();
   });
 
-  describe('→Testing /getRooms', () => {
+  describe('→Testing /rooms', () => {
     describe('Testing clear database', () => {
       it('Return empty array', (done) => {
         request(app)
-          .post('/getRooms')
-          .send({})
+          .get('/rooms')
           .expect('Content-Type', /json/)
           .expect(200)
           .expect((res) => {
@@ -109,8 +108,7 @@ describe('Testing router.js', () => {
 
       it('Return rooms from database', (done) => {
         request(app)
-          .post('/getRooms')
-          .send({})
+          .get('/rooms')
           .expect('Content-Type', /json/)
           .expect(200)
           .expect((res) => {
@@ -123,13 +121,11 @@ describe('Testing router.js', () => {
     });
   });
 
-  describe('→Testing /getMessages', () => {
+  describe('→Testing /messagess', () => {
     describe('Testing clear database', () => {
       it('Return empty messages', (done) => {
         request(app)
-          .post('/getMessages')
-          .send({roomId: '5f2825db31595c1748b5d41c'})
-          .set('Content-Type', 'application/json')
+          .get('/messages/5f2825db31595c1748b5d41c')
           .expect('Content-Type', /json/)
           .expect(200)
           .expect((res) => {
@@ -181,9 +177,7 @@ describe('Testing router.js', () => {
 
       it('Return a correct messages', (done) => {
         request(app)
-          .post('/getMessages')
-          .send({roomId: '5f2825db31595c1748b5d41c'})
-          .set('Content-Type', 'application/json')
+          .get('/messages/5f2825db31595c1748b5d41c')
           .expect('Content-Type', /json/)
           .expect(200)
           .expect((res) => {
@@ -205,13 +199,7 @@ describe('Testing router.js', () => {
   describe('→Testing /createRoom', () => {
     describe('Do not send roomName', () => {
       it('Retrun a bad', (done) => {
-        request(app)
-          .post('/createRoom')
-          .send({})
-          .expect((res) => {
-            expect(res.body.status).toEqual('error');
-          })
-          .end(done);
+        request(app).post('/createRoom').send({}).expect(500).end(done);
       });
     });
 
@@ -300,15 +288,7 @@ describe('Testing router.js', () => {
       });
 
       it('Should return error, test wrong key', (done) => {
-        request(app)
-          .post('/join')
-          .send({key: 'hehe'})
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .expect((res) => {
-            expect(res.body.error).toEqual(true);
-          })
-          .end(done);
+        request(app).post('/join').send({key: 'hehe'}).expect(400).end(done);
       });
 
       describe('Should add me to room', () => {
@@ -367,7 +347,7 @@ describe('Testing router.js', () => {
     });
     it('Should delete the room from my user database', (done) => {
       request(app)
-        .post('/deleteRoom')
+        .delete('/deleteRoom')
         .send({roomId: '5f2825db31595c1748b5d41c'})
         .expect('Content-Type', /json/)
         .expect(200)
@@ -422,7 +402,7 @@ describe('Testing router.js', () => {
 
     it('Change name of the room', (done) => {
       request(app)
-        .post('/editNameRoom')
+        .put('/editNameRoom')
         .send({roomId: '5f2825db31595c1348b5d41c', newRoomName: 'edited name'})
         .expect('Content-Type', /json/)
         .expect(200)

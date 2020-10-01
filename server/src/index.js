@@ -5,9 +5,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
-import usersRouter from 'api/routers/usersRoute';
 import router from 'api/routers/router';
-import {mainSocket} from 'sockets';
+import {mainSocket} from './sockets';
 import {env} from 'process';
 
 const mainRoute = new express.Router();
@@ -62,7 +61,7 @@ const corsOptions = {
 app.use(cors());
 
 app.use([router, mainRoute]);
-app.use('/user', usersRouter);
+// app.use('/user', usersRouter);
 
 // server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));
 server.listen(process.env.PORT || 5000);

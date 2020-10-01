@@ -1,5 +1,9 @@
 const errorHandler = ({res, errorDescription, errorCode, err}) => {
-  console.error(errorDescription, err);
+  if (err) {
+    console.error(errorDescription, err);
+  } else {
+    console.log(errorDescription);
+  }
   res.status(errorCode).send(errorDescription);
 };
 
