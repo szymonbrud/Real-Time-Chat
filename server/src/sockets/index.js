@@ -1,4 +1,4 @@
-import {createUser, getUser, removeUser, users, leaveFromRoom} from 'users';
+import {createUser, getUser, removeUser, leaveFromRoom} from './users';
 import {saveMessageDatabase} from 'databaseControll';
 
 export const mainSocket = (io) =>
@@ -7,24 +7,20 @@ export const mainSocket = (io) =>
 
     socket.on('join', ({name, roomId, userId}, callback) => {
       console.log('join socket');
-
-      // console.log(userId, roomId, name);
-      console.log('JOIN: ------↓-------');
-      console.log(users);
+      console.log(roomId);
 
       if (name.length === 0 && roomId.length === 0) {
+        console.error('Invalid data');
         return callback('error');
       }
-      console.log(roomId);
 
       const {user, err} = createUser(socket.id, name, roomId, userId);
 
       if (err) {
-        console.log('ERROR');
+        console.error('Error during creating user');
         removeUser(socket.id);
-        callback('err');
+        callback('error');
       } else {
-        console.log(`join: ${user.room}`);
         socket.join(user.room);
 
         socket.emit('message', {
@@ -33,29 +29,21 @@ export const mainSocket = (io) =>
         });
         socket.to(user.room).emit('message', {user: 'admin', text: `${user.username} has joined!`});
 
-        console.log(Object.keys(socket.rooms));
-
         callback();
       }
     });
 
     socket.on('disconnectRoom', ({lastRoomId}) => {
-      console.log(`leave: ${lastRoomId}`);
       leaveFromRoom(socket.id);
       socket.leave(lastRoomId);
-      console.log('LEAVE: ------↓-------');
-      console.log(users);
-      console.log('------↓------- SOCKET');
-      console.log(socket.rooms);
-      console.log(lastRoomId);
-      // console.log(Object.keys(socket.rooms));
     });
 
     socket.on('sendMessage', ({text}, callback) => {
       const {room, username, userId, err} = getUser(socket.id);
 
       if (err) {
-        callback('err');
+        console.error('Error during send the message');
+        callback('error');
       }
 
       socket.to(room).emit('message', {user: username, text: text});
@@ -65,13 +53,12 @@ export const mainSocket = (io) =>
     });
 
     socket.on('disconnect', () => {
-      console.log('disconect!');
-      const user = removeUser(socket.id);
-      // const onlineUsers = getOnlineUsers(user.room);
+      const user = getUser(socket.id);
 
       if (user) {
-        // io.to(user.room).emit('message', {user: 'Admin', text: `${user.username}, wyszedł.`});
+        io.to(user.room).emit('message', {user: 'Admin', text: `${user.username}, wyszedł.`});
         // io.in(user.room).emit('onlineUsers', {onlineUsers});
       }
+      removeUser(socket.id);
     });
   });

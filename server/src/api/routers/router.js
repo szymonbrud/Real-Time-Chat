@@ -47,12 +47,12 @@ router.get('/', (req, res) => {
   res.send('Server is up and running!').status(200);
 });
 
-router.get('/rooms', [urlencodedParser, verifyUser], (req, res) => {
+router.post('/rooms', [urlencodedParser, verifyUser], (req, res) => {
   getRoomsByUser(req.userId, res);
 });
 
-router.get('/messages/:roomId', [urlencodedParser, verifyUser], (req, res) => {
-  const {roomId} = req.params;
+router.post('/messages', [urlencodedParser, verifyUser], (req, res) => {
+  const {roomId} = req.body;
   AllMessages.find({roomId}, (err, messages) => {
     if (err) {
       errorHandler({req, errorCode: 501, errorDescription: 'Error during get messages', err});
@@ -161,7 +161,7 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
           rooms: [
             {
               roomName: roomData.roomName,
-              _id: new mongoose.Types.ObjectId(roomData.roomId),
+              roomId: new mongoose.Types.ObjectId(roomData.roomId),
             },
           ],
         });
@@ -176,7 +176,7 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
         });
       } else {
         const findIsRoomExist = rooms[0].rooms.find(
-          (room) => room._id.toString() === roomData.roomId,
+          (room) => room.roomId.toString() === roomData.roomId,
         );
         if (findIsRoomExist) {
           errorHandler({res, errorCode: 409, errorDescription: 'Room is already exist'});
@@ -187,7 +187,7 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
               $push: {
                 rooms: {
                   roomName: roomData.roomName,
-                  _id: new mongoose.Types.ObjectId(roomData.roomId),
+                  roomId: new mongoose.Types.ObjectId(roomData.roomId),
                 },
               },
             },
@@ -251,4 +251,5 @@ router.put('/editNameRoom', [urlencodedParser, verifyUser], (req, res) => {
     errorHandler({res, errorCode: 400, errorDescription: 'Incomplete data'});
   }
 });
+
 export default router;

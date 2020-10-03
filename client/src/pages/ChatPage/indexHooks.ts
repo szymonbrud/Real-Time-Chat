@@ -51,7 +51,7 @@ const useChatPage = () => {
 
   const getRoomsByDatabase = () => {
     userTokenId((token: string) => {
-      fetch(`${URL}getRooms`, {
+      fetch(`${URL}rooms`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const useChatPage = () => {
       setMessages([]);
       setCurrentRoom({ roomName, roomId });
       userTokenId((token: string) => {
-        fetch(`${URL}getMessages`, {
+        fetch(`${URL}messages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ const useChatPage = () => {
   const deleteRoom = () => {
     userTokenId((token: string) => {
       fetch(`${URL}deleteRoom`, {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -171,7 +171,7 @@ const useChatPage = () => {
     }
     userTokenId((token: string) => {
       fetch(`${URL}editNameRoom`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },

@@ -4,10 +4,10 @@ import socketio from 'socket.io';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-
-import router from 'api/routers/router';
-import {mainSocket} from './sockets';
 import {env} from 'process';
+
+import {mainSocket} from './sockets';
+import router from 'api/routers/router';
 
 const mainRoute = new express.Router();
 
@@ -29,7 +29,7 @@ mongoose.connect(`mongodb://localhost/${databaseName}`, {
 
 mongoose.connection
   .once('open', () => {
-    console.log('connect with mongodb');
+    console.log('Connect with mongodb');
   })
   .on('error', (err) => {
     console.log(err);
@@ -46,7 +46,6 @@ app.use(bodyParser.json());
 
 const whitelist = ['http://localhost:3000', 'https://real-time-chat-szymonqqaz.netlify.app/'];
 
-// eslint-disable-next-line
 const corsOptions = {
   credentials: true,
   origin: (origin, callback) => {
@@ -61,9 +60,7 @@ const corsOptions = {
 app.use(cors());
 
 app.use([router, mainRoute]);
-// app.use('/user', usersRouter);
 
-// server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));
 server.listen(process.env.PORT || 5000);
 
 export default app;

@@ -55,8 +55,9 @@ describe('Testing router.js', () => {
     describe('Testing clear database', () => {
       it('Return empty array', (done) => {
         request(app)
-          .get('/rooms')
-          .expect('Content-Type', /json/)
+          .post('/rooms')
+          .send({})
+          // .expect('Content-Type', /json/)
           .expect(200)
           .expect((res) => {
             expect(res.body).toEqual({status: 'OK', nameRooms: []});
@@ -108,7 +109,7 @@ describe('Testing router.js', () => {
 
       it('Return rooms from database', (done) => {
         request(app)
-          .get('/rooms')
+          .post('/rooms')
           .expect('Content-Type', /json/)
           .expect(200)
           .expect((res) => {
@@ -125,7 +126,8 @@ describe('Testing router.js', () => {
     describe('Testing clear database', () => {
       it('Return empty messages', (done) => {
         request(app)
-          .get('/messages/5f2825db31595c1748b5d41c')
+          .post('/messages')
+          .send({tokenId: '5f2825db31595c1748b5d41c'})
           .expect('Content-Type', /json/)
           .expect(200)
           .expect((res) => {
@@ -177,7 +179,8 @@ describe('Testing router.js', () => {
 
       it('Return a correct messages', (done) => {
         request(app)
-          .get('/messages/5f2825db31595c1748b5d41c')
+          .post('/messages')
+          .send({roomId: '5f2825db31595c1748b5d41c'})
           .expect('Content-Type', /json/)
           .expect(200)
           .expect((res) => {
