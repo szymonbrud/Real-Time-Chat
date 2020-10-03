@@ -1,0 +1,7 @@
+const imageResponse =
+  // eslint-disable-next-line
+  'iVBORw0KGgoAAAANSUhEUgAAAJYAAACWAQMAAAAGz+OhAAAABlBMVEX///8AAABVwtN+AAABXklEQVRIib2WMa6EMAxEjbZImSNwE7gY2oD2YuxNcoSUKRD+MyYr7Ze2dEiD/BrjYTJG5MdJqloeRUT3uFpV3dkiMpRUUpZZt8KqAxv1XR56CDqCoerErK/IUzoyiS/FoxujfgtYeOspX5o6MvMBWK5T3MqXNxxZOw/Mput/W7uxxEKtjKu178AyZMOduT6Vqul3A1sk8K4mrbOu8Rg5rzdLOZwY+mg2zDJ1YFoHZs7IQhg9/gzCIdDiwRGpX8A9cmcS6A3NljlJA/u6s8p2B/MZF6qN6MtMvwSPw9wJqyDsHRi+PBaMWe5pt6q6s4Xhr8znAc9Xpg/c2WiR2Vbapd89rM7QFHvhjBveJnBPO7MrQDEvI4/R04G1vbCOJi0m3cWdmXD8p4E3BvRlZrszBhr3G0akO5ByvRj/acon17qw1HYA1JSpA/sYGUEAIXPtwMwHzBzGAmQM+z3sx/kD1V2ek26Y9ZgAAAAASUVORK5CYII=';
+
+const generateQrcode = () => imageResponse;
+
+export default generateQrcode;

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = new express.Router();
 
-import axios from 'axios';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
@@ -9,6 +8,7 @@ import verifyUser from 'api/controllers/verifyUser';
 import {AllMessages, RoomsData} from 'databaseControll';
 import {getRoomsByUser} from 'api/responses';
 import {errorHandler} from 'api/responses';
+import generateQrcodeByLink from 'api/functions/generateQrcode';
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -121,7 +121,7 @@ router.post('/createRoom', [urlencodedParser, verifyUser], (req, res) => {
   }
 });
 
-router.post('/createInvade', [urlencodedParser, verifyUser], (req, res) => {
+router.post('/createInvade', [urlencodedParser, verifyUser], async (req, res) => {
   const {roomId, roomName} = req.body;
   const {userId} = req;
 
@@ -132,15 +132,19 @@ router.post('/createInvade', [urlencodedParser, verifyUser], (req, res) => {
 
     const link = `http://localhost:3000/join/${key}/${roomName}`;
 
-    axios
-      .get(`https://api.qrserver.com/v1/create-qr-code/?data=${link}&size=150x150`, {
-        responseType: 'arraybuffer',
-      })
-      .then((response) => Buffer.from(response.data, 'binary').toString('base64'))
-      .then((e) => {
-        res.send({status: 'OK', link, image: e});
-        res.end();
-      });
+    const qrcode = await generateQrcodeByLink(link);
+
+    res.send({status: 'OK', link, image: qrcode});
+    res.end();
+    // axios
+    //   .get(`https://api.qrserver.com/v1/create-qr-code/?data=${link}&size=150x150`, {
+    //     responseType: 'arraybuffer',
+    //   })
+    //   .then((response) => Buffer.from(response.data, 'binary').toString('base64'))
+    //   .then((e) => {
+    //     res.send({status: 'OK', link, image: e});
+    //     res.end();
+    //   });
   }
 });
 

@@ -1,4 +1,4 @@
 export default (req, res, next) => {
-  req.userId = 'D3czjdfe';
+  req.userId = req.body.userId || 'D3czjdfe';
   next();
 };

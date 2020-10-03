@@ -5,6 +5,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import {env} from 'process';
+require('dotenv').config();
 
 import {mainSocket} from './sockets';
 import router from 'api/routers/router';
@@ -22,10 +23,23 @@ if (env.NODE_ENV === 'test') {
   databaseName = 'realtimechat';
 }
 
-mongoose.connect(`mongodb://localhost/${databaseName}`, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+if (
+  env.NODE_ENV === 'test' ||
+  env.npm_lifecycle_event === 'test:cy' ||
+  process.env.NODE_ENV === 'develop'
+) {
+  mongoose.connect(`mongodb://localhost/${databaseName}`, {
+    useNewUrlParser: true,
+
+    useUnifiedTopology: true,
+  });
+} else if (process.env.NODE_ENV === 'production') {
+  mongoose.connect(process.env.MONGODB_URL, {
+    useNewUrlParser: true,
+
+    useUnifiedTopology: true,
+  });
+}
 
 mongoose.connection
   .once('open', () => {
@@ -44,7 +58,7 @@ mainSocket(io);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-const whitelist = ['http://localhost:3000', 'https://real-time-chat-szymonqqaz.netlify.app/'];
+const whitelist = [process.env.BACKEND_URL];
 
 const corsOptions = {
   credentials: true,
@@ -56,8 +70,12 @@ const corsOptions = {
     callback(new Error('Not allowed by CORS'));
   },
 };
-// app.use(cors(corsOptions));
-app.use(cors());
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(cors(corsOptions));
+} else {
+  app.use(cors());
+}
 
 app.use([router, mainRoute]);
 

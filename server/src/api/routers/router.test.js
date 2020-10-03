@@ -6,8 +6,10 @@ import app from 'index';
 import {RoomsData, AllMessages} from 'databaseControll';
 
 jest.mock('api/controllers/verifyUser.js');
+jest.mock('api/functions/generateQrcode.js');
 
-const fakerUserId = 'D3czjdfe';
+const USER_ID1 = 'D3czjdfe';
+const USER_ID2 = 'W3hjwmcu';
 
 const getAPieceOfLink = (link) => {
   let keyToJoin = '';
@@ -144,7 +146,7 @@ describe('Testing router.js', () => {
 
         const message = new AllMessages({
           senderName: 'Michael Vandam',
-          senderId: fakerUserId,
+          senderId: USER_ID1,
           content: 'Hello, I am person!',
           roomId: new mongoose.Types.ObjectId('5f2825db31595c1748b5d41c'),
           date,
@@ -306,7 +308,7 @@ describe('Testing router.js', () => {
         it('Should add me to room', (done) => {
           request(app)
             .post('/join')
-            .send({key: realKey})
+            .send({key: realKey, userId: USER_ID2})
             .expect('Content-Type', /json/)
             .expect(200)
             .expect((res) => {

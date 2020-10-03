@@ -2,3 +2,4 @@
 firebaseConfig.js
 service-account-file.json
 .env
+config.json
