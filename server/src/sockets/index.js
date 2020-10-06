@@ -3,8 +3,6 @@ import {saveMessageDatabase} from 'databaseControll';
 
 export const mainSocket = (io) =>
   io.on('connect', (socket) => {
-    console.log('connect socket io');
-
     socket.on('join', ({name, roomId, userId}, callback) => {
       console.log('join socket');
       console.log(roomId);

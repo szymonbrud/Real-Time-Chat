@@ -12,6 +12,8 @@ import router from 'api/routers/router';
 
 const mainRoute = new express.Router();
 
+console.log('hehehe');
+
 let databaseName = '';
 
 if (env.NODE_ENV === 'test') {

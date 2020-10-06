@@ -19,5 +19,6 @@ module.exports = {
         },
       },
     ],
+    '@babel/plugin-transform-async-to-generator',
   ],
 };
