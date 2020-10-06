@@ -6,3 +6,4 @@ build
 server/firebaseConfig.js
 server/service-account-file.json
 server/config.json
+server/globalConfig.json
