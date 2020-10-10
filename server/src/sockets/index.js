@@ -2,6 +2,8 @@ import {createUser, getUser, removeUser, leaveFromRoom} from './users';
 import {saveMessageDatabase} from 'databaseControll';
 import {joinUser} from './voiceChat';
 
+const peers = {};
+
 export const mainSocket = (io) =>
   io.on('connect', (socket) => {
     // TEXT
@@ -59,19 +61,56 @@ export const mainSocket = (io) =>
       removeUser(socket.id);
     });
 
-    // VOICE
-    socket.on('joinVoiceChat', ({name, roomId}, callback) => {
-      socket.join(roomId + 'Voice');
+    // VOICE V1
+    // socket.on('joinVoiceChat', ({name, roomId}, callback) => {
+    //   socket.join(roomId + 'Voice');
 
-      const roomsUser = joinUser({name, roomId, socketId: socket.id});
-      callback(roomsUser);
+    //   const roomsUser = joinUser({name, roomId, socketId: socket.id});
+    //   callback(roomsUser);
+    // });
+
+    // socket.on('sending signal', ({roomId, signal}, callback) => {
+    //   socket.to(roomId + 'Voice').emit('user join', {signal});
+    // });
+
+    // socket.on('returning signal', ({roomId, signal}, callback) => {
+    //   socket.to(roomId + 'Voice').emit('receiving returned signal', {signal});
+    // });
+
+    socket.on('joinVoiceChat', () => {
+      peers[socket.id] = socket;
+
+      // wszyscy inni klineci poza senderem dostają initReceive
+      for (const id in peers) {
+        if (id === socket.id) continue;
+        peers[id].emit('initReceive', socket.id);
+      }
     });
 
-    socket.on('sending signal', ({roomId, signal}, callback) => {
-      socket.to(roomId + 'Voice').emit('user join', {signal});
+    socket.on('signal', (data) => {
+      // console.log('sending signal from ' + socket.id + ' to ')
+      if (!peers[data.socket_id]) return;
+      peers[data.socket_id].emit('signal', {
+        socket_id: socket.id,
+        signal: data.signal,
+      });
     });
 
-    socket.on('returning signal', ({roomId, signal}, callback) => {
-      socket.to(roomId + 'Voice').emit('receiving returned signal', {signal});
+    /**
+     * remove the disconnected peer connection from all other connected clients
+     */
+    socket.on('disconnect', () => {
+      // console.log('socket disconnected ' + socket.id)
+      socket.broadcast.emit('removePeer', socket.id);
+      delete peers[socket.id];
+    });
+
+    /**
+     * Send message to client to initiate a connection
+     * The sender has already setup a peer connection receiver
+     */
+    socket.on('initSend', (init_socket_id) => {
+      // console.log('INIT SEND by ' + socket.id + ' for ' + init_socket_id)
+      peers[init_socket_id].emit('initSend', socket.id);
     });
   });

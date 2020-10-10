@@ -1,5 +1,5 @@
 import { useState, useRef, RefObject } from 'react';
-import Peer from 'simple-peer';
+import SimplePeer from 'simple-peer';
 
 import useAuthentication from 'authentication/authenticationHooks';
 import { socket } from './useStartHooks';
@@ -10,94 +10,83 @@ const useVoiceChatHooks = () => {
   const videoRef: RefObject<HTMLVideoElement> = useRef(null);
   const videoIncommingRef: RefObject<HTMLVideoElement> = useRef(null);
 
+  const videos: RefObject<HTMLDivElement> = useRef(null);
+
   const [isVideoChatOpen, setIsVideoChatOpen] = useState(false);
   const [number, setNumber] = useState(1);
 
-  const createPeer = ({ stream, roomId }: { stream: any; roomId: string }) => {
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream,
-    });
-
-    peer.on('signal', (signal: any) => {
-      socket.emit('sending signal', { roomId, signal });
-    });
-
-    return peer;
-  };
-
-  const addPeer = ({
-    signalFrom,
-    roomId,
-    stream,
-  }: {
-    signalFrom: any;
-    roomId: string;
-    stream: any;
-  }) => {
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream,
-    });
-
-    peer.on('signal', signal => {
-      socket.emit('returning signal', { roomId, signal });
-    });
-
-    peer.signal(signalFrom);
-
-    return peer;
-  };
+  const [peers, setPeers]: any = useState({});
 
   const joinToVoiceChatRoom = (roomId: string) => {
     setIsVideoChatOpen(true);
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-      console.log('FIRST STREAM');
-      console.log(stream);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
       socket.emit('joinVoiceChat', { roomId, name: userName }, (response: any) => {
-        console.log(response);
-        const peer = createPeer({ roomId, stream });
+        //
+      });
 
-        // console.log(signal);
-        console.log('joinVoiceChat');
-        peer.on('stream', stream2 => {
-          console.log('STREAMMMM!');
-          if (videoIncommingRef.current) {
-            console.log('STREAMMMM2222222');
-            videoIncommingRef.current.srcObject = stream2;
-            setNumber(3);
+      socket.on('initReceive', (socket_id : any) => {
+        console.log('INIT RECEIVE ' + socket_id);
+        addPeer(socket_id, false);
+
+        socket.emit('initSend', socket_id);
+      });
+
+      socket.on('initSend', (socket_id : any) => {
+        console.log('INIT SEND ' + socket_id);
+        addPeer(socket_id, true);
+      });
+
+      // socket.on('removePeer', socket_id => {
+      //   console.log('removing peer ' + socket_id);
+      //   removePeer(socket_id);
+      // });
+
+      // socket.on('disconnect', () => {
+      //   console.log('GOT DISCONNECTED');
+      //   for (let socket_id in peers) {
+      //     removePeer(socket_id);
+      //   }
+      // });
+
+      socket.on('signal', (data: any) => {
+        peers[data.socket_id].signal(data.signal);
+      });
+
+      function addPeer(socket_id : any, am_initiator: any) {
+        peers[socket_id] = new SimplePeer({
+          initiator: am_initiator,
+          stream: stream,
+        });
+
+        console.log('1');
+        peers[socket_id].on('signal', (data: any) => {
+          console.log('2');
+          socket.emit('signal', {
+            signal: data,
+            socket_id: socket_id,
+          });
+        });
+
+        peers[socket_id].on('stream', (stream : any) => {
+          let newVid = document.createElement('video');
+          newVid.srcObject = stream;
+          newVid.id = socket_id;
+          newVid.style.width = '300px';
+          newVid.style.height = '200px';
+          // newVid.playsinline = false
+          newVid.autoplay = true;
+          newVid.className = 'vid';
+          // newVid.onclick = () => openPictureMode(newVid)
+          // newVid.ontouchstart = (e) => openPictureMode(newVid)
+          if (videos.current) {
+            videos.current.appendChild(newVid);
           }
         });
-      });
-
-      socket.on('user join', ({ signal }: { signal: any }) => {
-        const peer = addPeer({ signalFrom: signal, roomId, stream });
-        console.log(signal);
-        console.log('user join');
-        console.log(peer);
-
-        peer.on('stream', stream2 => {
-          console.log('STREAMMMM!');
-          if (videoIncommingRef.current) {
-            console.log('STREAM222222');
-            console.log(stream2);
-            videoIncommingRef.current.srcObject = stream2;
-            setNumber(2);
-            console.log(videoIncommingRef.current);
-          }
-        });
-      });
-
-      socket.on('receiving returned signal', (signal: { signal: any }) => {
-        console.log('receiving returned signal');
-        console.log(signal);
-      });
+      }
     });
   };
 
@@ -107,6 +96,7 @@ const useVoiceChatHooks = () => {
     videoRef,
     videoIncommingRef,
     number,
+    videos,
   };
 };
 

@@ -60,6 +60,7 @@ const ChatPage = () => {
     videoRef,
     videoIncommingRef,
     number,
+    videos
   } = voiceChatHooks();
   useStartHooks(setMessages);
 
@@ -151,13 +152,13 @@ const ChatPage = () => {
           {/* <OnlineUsersfrom onlineUsers={onlineUsers} /> */}
           {/* <LeaveButton diconnect={diconnect} /> */}
           {isVideoChatOpen && (
-            <>
+            <div ref={videos}>
               <div>number{number}</div>
 
               {console.log(videoIncommingRef?.current?.srcObject)}
               <Video muted autoPlay playsInline ref={videoIncommingRef} />
               <Video autoPlay playsInline blue ref={videoRef} />
-            </>
+            </div>
           )}
         </MainWrapper>
         <h1>hello I am chat page</h1>
