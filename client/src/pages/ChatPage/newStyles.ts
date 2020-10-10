@@ -89,3 +89,9 @@ export const CreateANewRoom = styled.div`
       display: flex;
     `}
 `;
+
+export const Video = styled.video`
+  width: 300px;
+  height: 200px;
+  background: ${({ blue }: { blue?: boolean }) => (blue ? 'blue' : 'orange')};
+`;

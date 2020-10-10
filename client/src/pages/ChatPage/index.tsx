@@ -6,6 +6,7 @@ import useAuthentication from 'authentication/authenticationHooks';
 import useSocketConnect from './socketHooks';
 import indexHooks from './indexHooks';
 import useStartHooks from './useStartHooks';
+import voiceChatHooks from './useVoiceChatHooks';
 
 import {
   MainWrapper,
@@ -25,6 +26,7 @@ import {
   CopyButton,
   TextToCopy,
   CreateANewRoom,
+  Video,
 } from './newStyles';
 
 const ChatPage = () => {
@@ -52,9 +54,14 @@ const ChatPage = () => {
   } = indexHooks();
   const { textInputRef, triggerSend, sendMessage } = useSocketConnect(setMessages);
   const { logout } = useAuthentication();
+  const {
+    joinToVoiceChatRoom,
+    isVideoChatOpen,
+    videoRef,
+    videoIncommingRef,
+    number,
+  } = voiceChatHooks();
   useStartHooks(setMessages);
-
-  console.log(rooms);
 
   return (
     <>
@@ -114,6 +121,9 @@ const ChatPage = () => {
               <button onClick={invadeToRoom}>Invate to room</button>
               <button onClick={deleteRoom}>Delete room</button>
               <button onClick={switchVisibleChangeRoomName}>Change room name</button>
+              <button onClick={() => joinToVoiceChatRoom(currentRoom.roomId)}>
+                join to voice chat
+              </button>
               <h1>{currentRoom?.roomName}</h1>
               {/* <MessagesWrapper ref={messageWrapperRef}> */}
               <MessagesWrapper data-testid="messageWrapper" ref={messageWrapperRef}>
@@ -140,6 +150,15 @@ const ChatPage = () => {
           )}
           {/* <OnlineUsersfrom onlineUsers={onlineUsers} /> */}
           {/* <LeaveButton diconnect={diconnect} /> */}
+          {isVideoChatOpen && (
+            <>
+              <div>number{number}</div>
+
+              {console.log(videoIncommingRef?.current?.srcObject)}
+              <Video muted autoPlay playsInline ref={videoIncommingRef} />
+              <Video autoPlay playsInline blue ref={videoRef} />
+            </>
+          )}
         </MainWrapper>
         <h1>hello I am chat page</h1>
         <button onClick={logout} style={{ height: '30px' }}>

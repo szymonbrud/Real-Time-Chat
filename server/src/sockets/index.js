@@ -1,12 +1,11 @@
 import {createUser, getUser, removeUser, leaveFromRoom} from './users';
 import {saveMessageDatabase} from 'databaseControll';
+import {joinUser} from './voiceChat';
 
 export const mainSocket = (io) =>
   io.on('connect', (socket) => {
+    // TEXT
     socket.on('join', ({name, roomId, userId}, callback) => {
-      console.log('join socket');
-      console.log(roomId);
-
       if (name.length === 0 && roomId.length === 0) {
         console.error('Invalid data');
         return callback('error');
@@ -58,5 +57,21 @@ export const mainSocket = (io) =>
         // io.in(user.room).emit('onlineUsers', {onlineUsers});
       }
       removeUser(socket.id);
+    });
+
+    // VOICE
+    socket.on('joinVoiceChat', ({name, roomId}, callback) => {
+      socket.join(roomId + 'Voice');
+
+      const roomsUser = joinUser({name, roomId, socketId: socket.id});
+      callback(roomsUser);
+    });
+
+    socket.on('sending signal', ({roomId, signal}, callback) => {
+      socket.to(roomId + 'Voice').emit('user join', {signal});
+    });
+
+    socket.on('returning signal', ({roomId, signal}, callback) => {
+      socket.to(roomId + 'Voice').emit('receiving returned signal', {signal});
     });
   });
