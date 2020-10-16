@@ -6,7 +6,7 @@ const GlobalStyle = createGlobalStyle`
   
   @font-face{
     font-family: 'Roboto', sans-serif;
-    src: url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
+    src: url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@400;500;700&family=Ropa+Sans&display=swap');
   }
 
   *, *::after, *::before{
@@ -23,7 +23,6 @@ const GlobalStyle = createGlobalStyle`
     font-size: 1.6rem;
     margin: 0;
     font-family: 'Roboto', sans-serif;
-    /* width: auto; */
   }
 `;
 

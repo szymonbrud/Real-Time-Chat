@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import GlobalStyleProvider from 'assets/styles/globalStyles';
 
+import './styles.css';
+
 import { JoinContextProvider } from 'context/joinContext';
 import LoginPage from 'pages/LoginPage';
 import ChatPage from 'pages/ChatPage';

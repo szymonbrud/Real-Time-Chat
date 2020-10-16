@@ -15,7 +15,7 @@ const useAuthentication = () => {
   useInitialFirebase();
 
   const provider = new firebase.auth.GoogleAuthProvider();
-  const [isUserLogin, setIsUserLogin] = useState('unconfifrfmed');
+  const [isUserLogin, setIsUserLogin] = useState(authenicationProgress.loading);
 
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
@@ -27,7 +27,7 @@ const useAuthentication = () => {
         setUserName(userData.displayName);
         setUserId(userData.uid);
       } else {
-        setIsUserLogin(authenicationProgress.error);
+        setIsUserLogin(authenicationProgress.unconfirmed);
       }
     });
 
@@ -35,6 +35,7 @@ const useAuthentication = () => {
   }, []);
 
   const loginWithGoogle = () => {
+    setIsUserLogin(authenicationProgress.loading);
     firebase
       .auth()
       .signInWithPopup(provider)
@@ -46,12 +47,13 @@ const useAuthentication = () => {
   };
 
   const loginWithAnonymuss = () => {
+    setIsUserLogin(authenicationProgress.loading);
     firebase
       .auth()
       .signInAnonymously()
       .then()
       .catch(error => {
-        // setIsUserLogin('unconfirmed');
+        setIsUserLogin(authenicationProgress.unconfirmed);
         console.error(error);
       });
   };
@@ -71,21 +73,12 @@ const useAuthentication = () => {
       .auth()
       .currentUser?.getIdToken(true)
       .then(idToken => {
-        console.log(idToken);
         callback(idToken);
       })
       .catch(err => {
         console.log(err);
       });
   };
-
-  // const getUserName = () => {
-  //   return userName;
-  // };
-
-  // const getUserId = () => {
-  //   return userId;
-  // };
 
   return {
     loginWithGoogle,

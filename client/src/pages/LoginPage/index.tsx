@@ -2,7 +2,11 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import useAuthentication from 'authentication/authenticationHooks';
-import { Background, Text } from './styles';
+
+import { Background, HeaderText, LoginButton, Icon, BottomText, AuthText, ErrorText } from './styles';
+
+import anonymusIcon from 'assets/icons/anonymus.svg';
+import googleIcon from 'assets/icons/google.svg';
 
 enum authenicationProgress {
   loading = 'loading',
@@ -12,21 +16,29 @@ enum authenicationProgress {
 }
 
 const LoginPage = () => {
-  const { loginWithGoogle, isUserLogin, loginWithAnonymuss } = useAuthentication();
-
-  console.log('open login');
+  const { loginWithGoogle, loginWithAnonymuss, isUserLogin } = useAuthentication();
 
   if (isUserLogin === authenicationProgress.confirmed) {
     return <Redirect to="/room" />;
   }
 
+  if (isUserLogin === authenicationProgress.loading) {
+    return (
+      <Background>
+        <AuthText>autoryzacja...</AuthText>
+      </Background>
+    )
+  }
+
   return (
     <Background>
-      <Text>Stwórz nowy pokój lub dołącz</Text>
-      <button onClick={loginWithGoogle}>login with google</button>
-      <button data-testid="anonymussLogin" onClick={loginWithAnonymuss}>
-        login with anonymuss
-      </button>
+      <HeaderText>Zaloguj się do Real Time chat</HeaderText>
+      <LoginButton onClick={loginWithGoogle} type="button"><Icon src={googleIcon} />google</LoginButton>
+      <LoginButton onClick={loginWithAnonymuss} type="button"><Icon src={anonymusIcon} />anonimowy</LoginButton>
+      {
+        isUserLogin === authenicationProgress.error && <ErrorText>Błąd podczas logowania, spróbuj ponownie</ErrorText>
+      }
+      <BottomText>Pamiętaj że logując się jako anonimowy twoje dane zostaną utracone po zamknięciu karty.</BottomText>
     </Background>
   );
 };

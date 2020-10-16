@@ -20,7 +20,7 @@ const PrivateRoute = ({ component, ...rest }: any) => {
     return <Route {...rest} render={() => Comp} />;
   }
 
-  if (isUserLogin === authenicationProgress.error) {
+  if (isUserLogin === authenicationProgress.error || isUserLogin === authenicationProgress.unconfirmed) {
     return <LoginPage />;
   }
 
