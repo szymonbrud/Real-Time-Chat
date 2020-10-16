@@ -2,7 +2,13 @@ import {createUser, getUser, removeUser, leaveFromRoom} from './users';
 import {saveMessageDatabase} from 'databaseControll';
 import {joinUser} from './voiceChat';
 
-const peers = {};
+const peers = [];
+
+// const peersNewStructure = [{
+//   socket,
+//   userName,
+//   roomId
+// }]
 
 export const mainSocket = (io) =>
   io.on('connect', (socket) => {
@@ -77,23 +83,59 @@ export const mainSocket = (io) =>
     //   socket.to(roomId + 'Voice').emit('receiving returned signal', {signal});
     // });
 
-    socket.on('joinVoiceChat', () => {
-      peers[socket.id] = socket;
+    socket.on('joinVoiceChat', ({roomId, roomName}) => {
+      // peers[socket.id] = socket;
+
+      const findUser = peers.find((user) => user.socket.id === socket.id);
+
+      if (!findUser) {
+        console.log('user did not find');
+        peers.push({socket: socket, roomName, roomId});
+      } else {
+        console.log('user found');
+      }
 
       // wszyscy inni klineci poza senderem dostają initReceive
-      for (const id in peers) {
-        if (id === socket.id) continue;
-        peers[id].emit('initReceive', socket.id);
-      }
+
+      peers.forEach((peer) => {
+        console.log('1');
+        // console.log(peer.roomId);
+        console.log(peer.socket.id);
+        console.log('2');
+        console.log(socket.id);
+        // console.log(roomId);
+
+        if (peer.socket.id !== socket.id && peer.roomId === roomId) {
+          console.log('run emit');
+          console.log(peer.roomId);
+          peer.socket.emit('initReceive', socket.id);
+        }
+      });
+
+      // for (const id in peers) {
+      //   if (id === socket.id) continue;
+      //   peers[id].emit('initReceive', socket.id);
+      // }
     });
 
     socket.on('signal', (data) => {
       // console.log('sending signal from ' + socket.id + ' to ')
-      if (!peers[data.socket_id]) return;
-      peers[data.socket_id].emit('signal', {
-        socket_id: socket.id,
-        signal: data.signal,
-      });
+      // if (!peers[data.socket_id]) return;
+
+      const findUser = peers.find((user) => user.socket.id === data.socket_id);
+
+      if (findUser) {
+        // peers[data.socket_id].emit('signal', {
+        //   socket_id: socket.id,
+        //   signal: data.signal,
+        // });
+        findUser.socket.emit('signal', {
+          socket_id: socket.id,
+          signal: data.signal,
+        });
+      } else {
+        return;
+      }
     });
 
     /**
@@ -111,6 +153,9 @@ export const mainSocket = (io) =>
      */
     socket.on('initSend', (init_socket_id) => {
       // console.log('INIT SEND by ' + socket.id + ' for ' + init_socket_id)
-      peers[init_socket_id].emit('initSend', socket.id);
+
+      const findUser = peers.find((user) => user.socket.id === init_socket_id);
+      // peers[init_socket_id].emit('initSend', socket.id);
+      findUser.socket.emit('initSend', socket.id);
     });
   });
