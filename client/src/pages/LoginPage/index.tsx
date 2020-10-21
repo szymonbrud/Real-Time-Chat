@@ -19,7 +19,7 @@ const LoginPage = () => {
   const { loginWithGoogle, loginWithAnonymuss, isUserLogin } = useAuthentication();
 
   if (isUserLogin === authenicationProgress.confirmed) {
-    return <Redirect to="/room" />;
+    return <Redirect to="/messagesChat" />;
   }
 
   if (isUserLogin === authenicationProgress.loading) {

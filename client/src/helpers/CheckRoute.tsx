@@ -15,10 +15,10 @@ const CheckRoute = ({ component, ...rest }: any) => {
   const Comp = React.createElement(component);
 
   if (isUserLogin === authenicationProgress.confirmed) {
-    return <Redirect to="/room" />;
+    return <Redirect to="/messagesChat" />;
   }
 
-  if (isUserLogin === authenicationProgress.error) {
+  if (isUserLogin === authenicationProgress.error || isUserLogin === authenicationProgress.unconfirmed) {
     return <Route {...rest} render={() => Comp} />;
   }
 
