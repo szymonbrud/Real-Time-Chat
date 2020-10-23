@@ -48,7 +48,64 @@ router.get('/', (req, res) => {
 });
 
 router.post('/rooms', [urlencodedParser, verifyUser], (req, res) => {
-  getRoomsByUser(req.userId, res);
+  RoomsData.find({userId: req.userId}, (err, rooms) => {
+    if (err) {
+      errorHandler({err, errorCode: 500, errorDescription: 'Database error', res});
+      return;
+    }
+
+    const resoultRooms = [];
+
+    if (rooms.length !== 0) {
+      rooms[0].rooms.forEach((room) => resoultRooms.push(room));
+
+      const roomIds = [];
+
+      resoultRooms.forEach((room) => roomIds.push(room.roomId));
+
+      const messages = AllMessages.aggregate([
+        {
+          $match: {
+            roomId: {$in: roomIds},
+          },
+        },
+        {
+          $group: {
+            _id: '$roomId',
+            root: {$first: '$$ROOT'},
+          },
+        },
+        {$replaceWith: '$root'},
+        {$sort: {date: -1}},
+        {$limit: roomIds.length},
+      ]).exec();
+
+      messages
+        .then((resoultMessages) => {
+          const dataToReturn = [];
+
+          for (let index = 0; index <= roomIds.length - 1; index++) {
+            dataToReturn.push({
+              roomName: resoultRooms[index].roomName,
+              roomId: resoultRooms[index].roomId,
+              date: resoultMessages[index] && resoultMessages[index].date,
+              senderName: resoultMessages[index] && resoultMessages[index].senderName,
+              content: resoultMessages[index] && resoultMessages[index].content,
+            });
+          }
+
+          res.setHeader('Content-Type', 'application/json');
+          res.send({status: 'OK', rooms: dataToReturn});
+        })
+        .catch((err) => {
+          errorHandler({err, errorCode: 500, errorDescription: 'Database error', res});
+          return;
+        });
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.send({status: 'OK', nameRooms: resoultRooms});
+    }
+  });
 });
 
 router.post('/messages', [urlencodedParser, verifyUser], (req, res) => {

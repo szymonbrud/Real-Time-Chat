@@ -90,6 +90,24 @@ describe('Testing router.js', () => {
           ],
         });
 
+        const date = new Date();
+
+        const message = new AllMessages({
+          senderName: 'Michael Vandam',
+          senderId: USER_ID1,
+          content: 'Hello, I am person!',
+          roomId: new mongoose.Types.ObjectId('5f2825db31595c1748b5d41c'),
+          date,
+        });
+
+        const message2 = new AllMessages({
+          senderName: 'Jan Włodek',
+          senderId: 'zwsi23zlwe',
+          content: 'Hello, I am robot!',
+          roomId: new mongoose.Types.ObjectId('5f2825db31595c1748b5d41c'),
+          date,
+        });
+
         await m.save((err, d) => {
           if (err) {
             console.log(err);
@@ -101,10 +119,26 @@ describe('Testing router.js', () => {
             console.log(err);
           }
         });
+
+        await message.save((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+
+        await message2.save((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
       });
 
       afterAll(async () => {
         await RoomsData.deleteOne({}, (err) => {
+          if (err) console.log(err);
+        });
+
+        await AllMessages.deleteMany({}, (err, i) => {
           if (err) console.log(err);
         });
       });
@@ -115,9 +149,9 @@ describe('Testing router.js', () => {
           .expect('Content-Type', /json/)
           .expect(200)
           .expect((res) => {
-            expect(res.body.nameRooms.length).toBe(1);
-            expect(res.body.nameRooms[0].roomName).toBe('Janowiańsko');
-            expect(res.body.nameRooms[0].roomId).toBe('5f2825db31595c1748b5d41c');
+            expect(res.body.rooms.length).toBe(1);
+            expect(res.body.rooms[0].roomName).toEqual('Janowiańsko');
+            expect(res.body.rooms[0].senderName).toEqual('Michael Vandam');
           })
           .end(done);
       });
