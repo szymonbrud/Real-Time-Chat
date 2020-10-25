@@ -69,6 +69,7 @@ router.post('/rooms', [urlencodedParser, verifyUser], (req, res) => {
             roomId: {$in: roomIds},
           },
         },
+        {$sort: {date: -1}},
         {
           $group: {
             _id: '$roomId',
@@ -76,7 +77,6 @@ router.post('/rooms', [urlencodedParser, verifyUser], (req, res) => {
           },
         },
         {$replaceWith: '$root'},
-        {$sort: {date: -1}},
         {$limit: roomIds.length},
       ]).exec();
 
@@ -84,15 +84,24 @@ router.post('/rooms', [urlencodedParser, verifyUser], (req, res) => {
         .then((resoultMessages) => {
           const dataToReturn = [];
 
-          for (let index = 0; index <= roomIds.length - 1; index++) {
-            dataToReturn.push({
-              roomName: resoultRooms[index].roomName,
-              roomId: resoultRooms[index].roomId,
-              date: resoultMessages[index] && resoultMessages[index].date,
-              senderName: resoultMessages[index] && resoultMessages[index].senderName,
-              content: resoultMessages[index] && resoultMessages[index].content,
+          resoultRooms.forEach((room) => {
+            const message = resoultMessages.find((message) => {
+              if (
+                new mongoose.Types.ObjectId(room.roomId).toHexString() ===
+                new mongoose.Types.ObjectId(message.roomId).toHexString()
+              ) {
+                return message;
+              }
             });
-          }
+
+            dataToReturn.push({
+              roomName: room.roomName,
+              roomId: room.roomId,
+              date: message !== -1 && message.date,
+              senderName: message !== -1 && message.senderName,
+              content: message !== -1 && message.content,
+            });
+          });
 
           res.setHeader('Content-Type', 'application/json');
           res.send({status: 'OK', rooms: dataToReturn});

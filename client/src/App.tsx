@@ -5,6 +5,7 @@ import GlobalStyleProvider from 'assets/styles/globalStyles';
 import './styles.css';
 
 import { JoinContextProvider } from 'context/joinContext';
+import { ViewContextProvider } from 'context/viewsContext';
 import LoginPage from 'pages/LoginPage';
 import ChatPage from 'pages/ChatPage';
 import JoinPage from 'pages/JoinPage';
@@ -19,7 +20,7 @@ import Routers from 'Routers'
 const App = () => {
   return (
     <GlobalStyleProvider>
-      <JoinContextProvider>
+      <ViewContextProvider>
         <Router>
           <Switch>
             <CheckRoute exact path="/" component={LoginPage} />
@@ -39,7 +40,7 @@ const App = () => {
             <PrivateRoute path="/join/:key/:roomName" component={JoinPage} />
           </Switch>
         </Router>
-      </JoinContextProvider>
+      </ViewContextProvider>
     </GlobalStyleProvider>
   );
 };

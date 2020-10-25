@@ -60,7 +60,8 @@ const useChatPage = () => {
       })
         .then(data => data.json())
         .then(e => {
-          setRooms(e.nameRooms);
+          console.log(e)
+          setRooms(e.rooms);
         })
         .catch(err => console.log(err));
     });
