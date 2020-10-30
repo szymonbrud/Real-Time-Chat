@@ -28,8 +28,6 @@ export const ViewContextProvider = ({ children }: { children: React.ReactNode })
     setState({...state, messagesView: messagesRooms})
   }
 
- 
-
   const initalState = {
     ...defaultContext,
     setMessagesView

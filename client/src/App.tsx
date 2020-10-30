@@ -9,6 +9,8 @@ import { ViewContextProvider } from 'context/viewsContext';
 import LoginPage from 'pages/LoginPage';
 import ChatPage from 'pages/ChatPage';
 import JoinPage from 'pages/JoinPage';
+import RoomPage from 'pages/RoomPage';
+
 
 import PrivateRoute from 'authentication/PrivateRoute';
 import CheckRoute from 'helpers/CheckRoute';
@@ -24,8 +26,10 @@ const App = () => {
         <Router>
           <Switch>
             <CheckRoute exact path="/" component={LoginPage} />
-            <PrivateRoute path="/room" component={ChatPage} />
-            <>
+            <PrivateRoute path="/lastRooms" component={ChatPage} />
+            <PrivateRoute path="/room/:id/:roomName" component={RoomPage} />
+            <PrivateRoute path="/join/:key/:roomName" component={JoinPage} />
+            <PrivateRoute>
               <BottomMenu/>
               {
                 Routers.map(({ isPrivate, path, Component, exact }:
@@ -36,8 +40,7 @@ const App = () => {
                     return <Route path={path} component={Component} exact={exact}/>
                   })
                 }
-            </>            
-            <PrivateRoute path="/join/:key/:roomName" component={JoinPage} />
+            </PrivateRoute>            
           </Switch>
         </Router>
       </ViewContextProvider>

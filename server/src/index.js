@@ -50,7 +50,7 @@ mongoose.connection
   });
 
 const app = express();
-const server = http.createServer(app);
+export const server = http.createServer(app);
 export const io = socketio(server);
 
 mainSocket(io);

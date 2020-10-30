@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon start.js",
-    "test": "jest --watch",
-    "test:nw": "jest",
+    "test": "jest --watch --detectOpenHandles --runInBand",
+    "test:nw": "jest --runInBand --detectOpenHandles",
     "test:cy": "nodemon start.js"
   },
   "devDependencies": {

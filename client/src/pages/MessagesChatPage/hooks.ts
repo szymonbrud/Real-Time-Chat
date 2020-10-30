@@ -11,12 +11,13 @@ if (window.location.hostname === 'localhost') {
   URL = 'https://real-time-chat-backend.herokuapp.com/';
 }
 
-const MessagesHooks = () => {
+const useMessagesHooks = () => {
   const { messagesView, setMessagesView } = useContext(viewContext);
+
   const { userTokenId } = useAuthentication();
 
   useEffect(() => {
-    if (messagesView.length === 0) {
+    if (!messagesView) {
       userTokenId((token: string) => {
         fetch(`${URL}rooms`, {
           method: 'POST',
@@ -41,4 +42,4 @@ const MessagesHooks = () => {
   }
 };
 
-export default MessagesHooks;
+export default useMessagesHooks;

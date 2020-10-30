@@ -1,4 +1,5 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
+import { Link } from 'react-router-dom'
 
 export const Wrapper = styled.nav`
   background: ${({ theme }) => theme.colors.lightBackground};
@@ -38,12 +39,14 @@ export const PossitionTopBarWrapper = styled.div`
   width: 100%;
 `;
 
-export const RoomsListWrapper = styled.div`
+export const RoomsListWrapper = styled(Link)`
   display: grid;
   grid-template-columns: 70% 30%;
   grid-template-rows: 1fr 1fr;
   width: 100%;
   margin-top: 35px;
+  text-decoration: none;
+  color: black;
 `;
 
 export const RoomListName = styled.h4`

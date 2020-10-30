@@ -107,5 +107,5 @@ describe('Testing /room', () => {
   });
 });
 
-//TODO: sprawdzić jaka jest najlepsza struktura dla czyrpess
-//TODO: przypomniec sobie najlepsze praktyki pisania testów z tego artykułu
+// TODO: sprawdzić jaka jest najlepsza struktura dla czyrpess
+// TODO: przypomniec sobie najlepsze praktyki pisania testów z tego artykułu

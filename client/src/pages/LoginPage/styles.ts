@@ -3,10 +3,13 @@ import styled from 'styled-components';
 export const Background = styled.section`
   background: ${({ theme }) => theme.colors.lightBackground};
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
 `;
 
 export const HeaderText = styled.p`

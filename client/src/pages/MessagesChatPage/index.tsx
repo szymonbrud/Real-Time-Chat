@@ -1,6 +1,6 @@
 import React from 'react'
 
-import MessagesHooks from './hooks'
+import useMessagesHooks from './hooks'
 import {
   Wrapper,
   NewRoomButton,
@@ -15,7 +15,7 @@ import {
 
 const MessagesChat = () => {
 
-  const { messagesView } = MessagesHooks();
+  const { messagesView } = useMessagesHooks();
 
   const changeDateFormat = (date: string) => {
     const dateJs = new Date(date);
@@ -34,9 +34,9 @@ const MessagesChat = () => {
           <NewRoomButton>new room</NewRoomButton>
         </PossitionTopBarWrapper>
         {
-          messagesView.map(({ content, date, roomName, senderName, roomId }:
+          messagesView && messagesView.map(({ content, date, roomName, senderName, roomId }:
             { content: string, date: string, roomName: string, senderName: string, roomId: string }) => (
-            <RoomsListWrapper key={roomId}>
+              <RoomsListWrapper key={roomId} to={`/room/${roomId}/${roomName}`}>
               <RoomListName>{roomName}</RoomListName>
               <RoomListTime>{changeDateFormat(date)}</RoomListTime>
               <RoomListLastMessage>{`${senderName}: ${content}`}</RoomListLastMessage>

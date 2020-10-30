@@ -30,11 +30,7 @@ export const getUser = (id) => {
 
 export const removeUser = (id) => {
   const userIndexToRemote = users.findIndex((user) => user.id === id);
-  const userSave = users[userIndexToRemote];
-  if (userIndexToRemote !== -1) {
-    users.splice(userIndexToRemote, 1)[0];
-    return userSave;
-  }
+  users.splice(userIndexToRemote, 1);
 };
 
 export const getOnlineUsers = (room) =>
@@ -42,5 +38,5 @@ export const getOnlineUsers = (room) =>
 
 export const leaveFromRoom = (id) => {
   const indexUserToLeave = users.findIndex((user) => user.id === id);
-  users[indexUserToLeave].room = '';
+  users.splice(indexUserToLeave);
 };
