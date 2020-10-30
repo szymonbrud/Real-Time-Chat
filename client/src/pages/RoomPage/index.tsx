@@ -1,13 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import ArrowSvg from 'assets/icons/arrow.svg';
-import { ReactComponent as MoreSvg } from 'assets/icons/circles.svg';
-import smothArrowSvg from 'assets/icons/smoth_arrow.svg';
-
 import sendSvg from 'assets/icons/send.svg';
 import addUser from 'assets/icons/addUser.svg';
 import sendBlueSvg from 'assets/icons/sendBlue.svg';
+import smothArrowSvg from 'assets/icons/smoth_arrow.svg';
+import { ReactComponent as MoreSvg } from 'assets/icons/circles.svg';
 
 import InvadeView from 'components/InvadeView';
 
@@ -43,7 +41,7 @@ const RoomPage = () => {
     setIsInvadeViewOpen,
     messageWrapperRef
   } = useRoomHook(id);
-  
+
   return (
     <>
       {isInvadeViewOpen && <InvadeView roomName={roomName} roomId={id} close={() => setIsInvadeViewOpen(false)} /> }
@@ -61,7 +59,7 @@ const RoomPage = () => {
             messages.length === 0 ?
               <h4>ladowanie</h4> : 
               messages.map((message : any) => (
-                <Message isMy={message.isSendByMe} senderName={message.senderName}>
+                <Message isMy={message.isSendByMe} senderName={message.senderName} key={message._id}>
                   {message.content}
                 </Message>
               ))

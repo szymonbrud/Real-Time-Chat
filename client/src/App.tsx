@@ -1,23 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import GlobalStyleProvider from 'assets/styles/globalStyles';
 
 import './styles.css';
 
-import { JoinContextProvider } from 'context/joinContext';
+import GlobalStyleProvider from 'assets/styles/globalStyles';
 import { ViewContextProvider } from 'context/viewsContext';
-import LoginPage from 'pages/LoginPage';
-import ChatPage from 'pages/ChatPage';
-import JoinPage from 'pages/JoinPage';
-import RoomPage from 'pages/RoomPage';
-
-
 import PrivateRoute from 'authentication/PrivateRoute';
 import CheckRoute from 'helpers/CheckRoute';
-
 import BottomMenu from 'components/BottomMenu'
 
-import Routers from 'Routers'
+import { bottomMenuRouters, mainRouters } from 'Routers'
 
 const App = () => {
   return (
@@ -25,19 +17,23 @@ const App = () => {
       <ViewContextProvider>
         <Router>
           <Switch>
-            <CheckRoute exact path="/" component={LoginPage} />
-            <PrivateRoute path="/lastRooms" component={ChatPage} />
-            <PrivateRoute path="/room/:id/:roomName" component={RoomPage} />
-            <PrivateRoute path="/join/:key/:roomName" component={JoinPage} />
+            {
+              mainRouters.map(({ isPrivate, Component, exact, path }: { isPrivate: boolean, path: string, Component: any, exact: boolean }) => {
+                if (isPrivate) {
+                  return <PrivateRoute path={path} component={Component} exact={exact} key={path}/>
+                } 
+                return <CheckRoute path={path} component={Component} exact={exact} key={path}/>
+              })
+            }
             <PrivateRoute>
               <BottomMenu/>
               {
-                Routers.map(({ isPrivate, path, Component, exact }:
+                bottomMenuRouters.map(({ isPrivate, path, Component, exact }:
                   { isPrivate: boolean, path: string, Component: any, exact: boolean }) => {
                     if (isPrivate) {
-                      return <PrivateRoute path={path} component={Component} exact={exact}/>
+                      return <PrivateRoute path={path} component={Component} exact={exact} key={path}/>
                     }
-                    return <Route path={path} component={Component} exact={exact}/>
+                    return <Route path={path} component={Component} exact={exact} key={path}/>
                   })
                 }
             </PrivateRoute>            

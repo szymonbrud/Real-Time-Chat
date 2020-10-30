@@ -4,14 +4,10 @@ import io from 'socket.io-client';
 
 import useAuthentication from 'authentication/authenticationHooks';
 
-let URL: string;
-let socket : any;
+import getUrl from 'helpers/getUrl';
 
-if (window.location.hostname === 'localhost') {
-  URL = 'http://localhost:5000/';
-} else {
-  URL = 'https://real-time-chat-backend.herokuapp.com/';
-}
+const URL = getUrl();
+let socket : any;
 
 const useRoomHook = (roomId : string) => {
 

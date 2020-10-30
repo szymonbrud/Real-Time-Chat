@@ -3,21 +3,26 @@ import { useEffect, useContext } from 'react';
 import { viewContext } from 'context/viewsContext';
 import useAuthentication from 'authentication/authenticationHooks';
 
-let URL: string;
+import getUrl from 'helpers/getUrl';
 
-if (window.location.hostname === 'localhost') {
-  URL = 'http://localhost:5000/';
-} else {
-  URL = 'https://real-time-chat-backend.herokuapp.com/';
-}
+let URL = getUrl();
 
 const useMessagesHooks = () => {
   const { messagesView, setMessagesView } = useContext(viewContext);
 
   const { userTokenId } = useAuthentication();
 
-  useEffect(() => {
-    if (!messagesView) {
+  const changeDateFormat = (date: string) => {
+    const dateJs = new Date(date);
+
+    const hour = dateJs.getHours()
+    const minute = dateJs.getMinutes();
+    
+    return `${hour}:${minute}`
+  }
+
+  const getRooms = () => {
+    if (setMessagesView) {
       userTokenId((token: string) => {
         fetch(`${URL}rooms`, {
           method: 'POST',
@@ -35,10 +40,15 @@ const useMessagesHooks = () => {
         })
       })
     }
-  }, [])
+  }
+
+  useEffect(() => {
+    getRooms();
+  }, [setMessagesView])
 
   return {
     messagesView,
+    changeDateFormat
   }
 };
 

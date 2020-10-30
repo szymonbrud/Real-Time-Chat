@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Routers from 'Routers';
+import {bottomMenuRouters} from 'Routers';
 
 import BottomMenuHooks from './hooks';
 
@@ -17,7 +17,7 @@ const BottomMenu = () => {
   return (
     <Wrapper ref={wrapperRef}>
       {
-        Routers.map(({path, Icon, name, color} : {path: string, Icon: any, name: string, color: string}, index) => {
+        bottomMenuRouters.map(({path, Icon, name, color} : {path: string, Icon: any, name: string, color: string}, index) => {
           return (
             <StyledLink to={path} onClick={() => switchPage(index)}>
               <Icon style={{ width: '20px' }} className="icon"/>

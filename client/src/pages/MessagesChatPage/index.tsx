@@ -15,16 +15,7 @@ import {
 
 const MessagesChat = () => {
 
-  const { messagesView } = useMessagesHooks();
-
-  const changeDateFormat = (date: string) => {
-    const dateJs = new Date(date);
-
-    const hour = dateJs.getHours()
-    const minute = dateJs.getMinutes();
-    
-    return `${hour}:${minute}`
-  }
+  const { messagesView, changeDateFormat } = useMessagesHooks();
 
   return (
     <Wrapper>
@@ -37,10 +28,10 @@ const MessagesChat = () => {
           messagesView && messagesView.map(({ content, date, roomName, senderName, roomId }:
             { content: string, date: string, roomName: string, senderName: string, roomId: string }) => (
               <RoomsListWrapper key={roomId} to={`/room/${roomId}/${roomName}`}>
-              <RoomListName>{roomName}</RoomListName>
-              <RoomListTime>{changeDateFormat(date)}</RoomListTime>
-              <RoomListLastMessage>{`${senderName}: ${content}`}</RoomListLastMessage>
-            </RoomsListWrapper>
+                <RoomListName>{roomName}</RoomListName>
+                <RoomListTime>{changeDateFormat(date)}</RoomListTime>
+                <RoomListLastMessage>{`${senderName}: ${content}`}</RoomListLastMessage>
+              </RoomsListWrapper>
           ))            
         }
       

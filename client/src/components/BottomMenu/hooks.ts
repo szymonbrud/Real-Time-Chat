@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
-import Routers from 'Routers';
+import {bottomMenuRouters} from 'Routers';
 
 enum currentPages{
   chat,
@@ -29,7 +29,7 @@ const BottomMenuHooks = () => {
 
     const location = window.location.pathname;
 
-    Routers.forEach((router, routerIndex) => {
+    bottomMenuRouters.forEach((router, routerIndex) => {
       if (router.path === location) {
         animationFunctions[routerIndex](true);
         setCurrerntPage(routerIndex)
