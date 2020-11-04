@@ -13,7 +13,7 @@ export const SectionName = styled.h2`
   margin: 0;
 `;
 
-export const NewRoomButton = styled.button`
+export const NewRoomButton = styled(Link)`
   font-family: ${({theme}) => theme.fonts.ropa};
   width: 108px;
   height: 31px;
@@ -22,6 +22,10 @@ export const NewRoomButton = styled.button`
   color: white;
   border-radius: 4px;
   font-size: 12px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const PositionWrapper = styled.div`

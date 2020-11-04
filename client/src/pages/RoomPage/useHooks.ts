@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import io from 'socket.io-client';
 
-import useAuthentication from 'authentication/authenticationHooks';
+import useAuthentication from 'authentication/useAuthenticationHooks';
 
 import getUrl from 'helpers/getUrl';
 
@@ -21,6 +21,7 @@ const useRoomHook = (roomId : string) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isInputHasText, setIsInputHasText] = useState(false);
   const [isInvadeViewOpen, setIsInvadeViewOpen] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(true);
 
   const getMessages = () => {
     userTokenId((token: string) => {
@@ -33,7 +34,7 @@ const useRoomHook = (roomId : string) => {
         })
           .then(data => data.json())
           .then(messages => {
-            console.log(messages)
+            setIsLoadingMessages(false);
             setMessages(messages.messages)
           })
           .catch(error => { 
@@ -146,7 +147,8 @@ const useRoomHook = (roomId : string) => {
     backToMessageView,
     isInvadeViewOpen,
     setIsInvadeViewOpen,
-    messageWrapperRef
+    messageWrapperRef,
+    isLoadingMessages
   }
 };
 

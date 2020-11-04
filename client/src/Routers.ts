@@ -4,6 +4,7 @@ import MorePage from 'pages/MorePage';
 import LoginPage from 'pages/LoginPage';
 import RoomPage from 'pages/RoomPage';
 import JoinPage from 'pages/JoinPage';
+import CreateNewRoomPage from 'pages/CreateNewRoomPage';
 
 import { ReactComponent as Phone } from 'assets/icons/phone.svg';
 import { ReactComponent as More } from 'assets/icons/circles.svg';
@@ -56,6 +57,12 @@ export const mainRouters = [
   {
     path: '/join/:key/:roomName',
     Component: JoinPage,
+    exact: false,
+    isPrivate: true,
+  },
+  {
+    path: '/newRoom/:type',
+    Component: CreateNewRoomPage,
     exact: false,
     isPrivate: true,
   },

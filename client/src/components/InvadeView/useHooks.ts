@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap, { Back } from 'gsap';
 
-import useAuthentication from 'authentication/authenticationHooks';
+import useAuthentication from 'authentication/useAuthenticationHooks';
 
 let URL: string;
 

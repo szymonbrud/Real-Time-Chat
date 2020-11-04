@@ -97,9 +97,9 @@ router.post('/rooms', [urlencodedParser, verifyUser], (req, res) => {
             dataToReturn.push({
               roomName: room.roomName,
               roomId: room.roomId,
-              date: message !== -1 && message.date,
-              senderName: message !== -1 && message.senderName,
-              content: message !== -1 && message.content,
+              date: message && message.date,
+              senderName: message && message.senderName,
+              content: message && message.content,
             });
           });
 

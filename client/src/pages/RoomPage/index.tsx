@@ -39,7 +39,8 @@ const RoomPage = () => {
     backToMessageView,
     isInvadeViewOpen,
     setIsInvadeViewOpen,
-    messageWrapperRef
+    messageWrapperRef,
+    isLoadingMessages
   } = useRoomHook(id);
 
   return (
@@ -56,8 +57,9 @@ const RoomPage = () => {
         </MenuWrapper>
         <MessagesWrapper ref={messageWrapperRef}>
           {
-            messages.length === 0 ?
-              <h4>ladowanie</h4> : 
+            isLoadingMessages ?
+              <h4>ladowanie</h4> :
+              messages.length === 0 ? 'wyślij swoją pierwszą wiadomość':
               messages.map((message : any) => (
                 <Message isMy={message.isSendByMe} senderName={message.senderName} key={message._id}>
                   {message.content}

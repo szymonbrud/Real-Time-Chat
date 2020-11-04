@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import useAuthentication from 'authentication/authenticationHooks';
+import useAuthentication from 'authentication/useAuthenticationHooks';
 
 import { Background, HeaderText, LoginButton, Icon, BottomText, AuthText, ErrorText } from './styles';
 

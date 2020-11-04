@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import useAuthentication from 'authentication/authenticationHooks';
+import useAuthentication from 'authentication/useAuthenticationHooks';
 
 enum authenicationProgress {
   loading = 'loading',

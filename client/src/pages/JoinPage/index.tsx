@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 
-import authenticationHooks from 'authentication/authenticationHooks';
+import authenticationHooks from 'authentication/useAuthenticationHooks';
 
 enum JoinStatus {
   wait,

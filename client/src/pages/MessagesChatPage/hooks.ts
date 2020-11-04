@@ -1,7 +1,7 @@
 import { useEffect, useContext } from 'react';
 
 import { viewContext } from 'context/viewsContext';
-import useAuthentication from 'authentication/authenticationHooks';
+import useAuthentication from 'authentication/useAuthenticationHooks';
 
 import getUrl from 'helpers/getUrl';
 
@@ -18,6 +18,10 @@ const useMessagesHooks = () => {
     const hour = dateJs.getHours()
     const minute = dateJs.getMinutes();
     
+    if (isNaN(hour)) {
+      return null
+    }
+
     return `${hour}:${minute}`
   }
 
