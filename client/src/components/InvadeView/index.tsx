@@ -23,14 +23,14 @@ const InvadeView = ({close, roomId, roomName} : { close: any, roomId: string, ro
 
   return (
     <MainWrapper>
-      <BackArrowWrapper onClick={close}>
+      <BackArrowWrapper onClick={close} data-testid="backButton">
         <ArrowIcon src={smothArrowSvg} alt="back"/>
       </BackArrowWrapper>
       {
         invadeLink ? 
           <>
             <Text>Invade by link or qr code</Text>
-            <LinkWrapper>
+            <LinkWrapper data-testid="linkWrapper">
               {invadeLink}
             </LinkWrapper>
             <CopyButton ref={copyButtonRef} onClick={animationCopyButton}>

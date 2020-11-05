@@ -28,7 +28,7 @@ const MessagesChat = () => {
           messagesView && messagesView.map(({ content, date, roomName, senderName, roomId }:
             { content: string, date: string, roomName: string, senderName: string, roomId: string }) => (
               <RoomsListWrapper key={roomId} to={`/room/${roomId}/${roomName}`}>
-                <RoomListName>{roomName}</RoomListName>
+                <RoomListName data-testid="roomNameList">{roomName}</RoomListName>
                 {changeDateFormat(date) && <RoomListTime>{changeDateFormat(date)}</RoomListTime>}
                 {senderName && content && <RoomListLastMessage>{`${senderName}: ${content}`}</RoomListLastMessage>}
               </RoomsListWrapper>

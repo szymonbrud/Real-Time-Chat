@@ -34,7 +34,7 @@ const LoginPage = () => {
     <Background>
       <HeaderText>Zaloguj się do Real Time chat</HeaderText>
       <LoginButton onClick={loginWithGoogle} type="button"><Icon src={googleIcon} />google</LoginButton>
-      <LoginButton onClick={loginWithAnonymuss} type="button"><Icon src={anonymusIcon} />anonimowy</LoginButton>
+      <LoginButton onClick={loginWithAnonymuss} type="button" data-testid="anonymussLogin"><Icon src={anonymusIcon} />anonimowy</LoginButton>
       {
         isUserLogin === authenicationProgress.error && <ErrorText>Błąd podczas logowania, spróbuj ponownie</ErrorText>
       }

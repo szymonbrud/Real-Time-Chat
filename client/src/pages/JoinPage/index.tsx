@@ -63,7 +63,7 @@ const JoinPage = () => {
     case JoinStatus.wait:
       return waitPage;
     case JoinStatus.success:
-      return <Redirect to="/room" />;
+      return <Redirect to={`/messagesChat`} />;
     case JoinStatus.error:
       return errorPage;
   }

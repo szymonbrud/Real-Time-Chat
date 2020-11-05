@@ -52,7 +52,7 @@ const RoomPage = () => {
             <BackArrow src={smothArrowSvg} alt="back" />
           </BackArrowWrapper>
           <RoomName>{roomName}</RoomName>
-          <img src={addUser} style={{ width: '25px', margin: '0 20px 0 auto' }} onClick={() => setIsInvadeViewOpen(true)} />
+          <img src={addUser} style={{ width: '25px', margin: '0 20px 0 auto' }} onClick={() => setIsInvadeViewOpen(true)} data-testid="invade"/>
           <MoreSvg style={{ width: '25px', transform: 'rotate(90deg)', margin: '0 10px 0 0'}} ref={iconMoreRef}/>
         </MenuWrapper>
         <MessagesWrapper ref={messageWrapperRef}>
@@ -67,8 +67,8 @@ const RoomPage = () => {
               ))
           }
           <WrapperWriteMessageBottomBar isFocused={isInputFocused}>
-            <MessageWriteInput placeholder="Write the message..." onFocus={() => setIsInputFocused(true)} onBlur={() => setIsInputFocused(false)} onKeyDown={(event) => checkInputHasText(event)} ref={textInput}/>
-            <SendButton onClick={sendMessage}>
+            <MessageWriteInput placeholder="Write the message..." onFocus={() => setIsInputFocused(true)} onBlur={() => setIsInputFocused(false)} onKeyDown={(event) => checkInputHasText(event)} ref={textInput} data-testid="inputMessage" />
+            <SendButton onClick={sendMessage} data-testid="sendButton">
               <SendIcon src={isInputHasText ? sendBlueSvg : sendSvg} alt="send"/>
             </SendButton>
           </WrapperWriteMessageBottomBar>
