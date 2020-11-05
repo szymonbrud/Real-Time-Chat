@@ -5,7 +5,7 @@ import getUrl from 'helpers/getUrl';
 
 const URL = getUrl();
 
-const useHooks = (goBack : Function) => {
+const useHooks = (goBack : Function, roomId: string) => {
 
   const [isButtonActive, setIsButtonActive] = useState(false);
 
@@ -46,11 +46,32 @@ const useHooks = (goBack : Function) => {
     }
   }
 
+  const changeRoomName = () => {
+    userTokenId((token: string) => {
+      fetch(`${URL}editNameRoom`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          roomId: roomId,
+          newRoomName: inputRef.current.value,
+        }),
+      })
+        .then(data => data.json())
+        .then(() => {
+          goBack();
+        });
+    });
+  }
+
   return {
     inputRef,
     isButtonActive,
     checkInputText,
-    createNewRoom
+    createNewRoom,
+    changeRoomName
   }
 }
 

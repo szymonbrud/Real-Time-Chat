@@ -8,6 +8,7 @@ import smothArrowSvg from 'assets/icons/smoth_arrow.svg';
 import { ReactComponent as MoreSvg } from 'assets/icons/circles.svg';
 
 import InvadeView from 'components/InvadeView';
+import RightRoomMenu from 'components/RightRoomMenu';
 
 import useRoomHook from './useHooks'
 import {
@@ -40,12 +41,17 @@ const RoomPage = () => {
     isInvadeViewOpen,
     setIsInvadeViewOpen,
     messageWrapperRef,
-    isLoadingMessages
-  } = useRoomHook(id);
+    isLoadingMessages,
+    deleteRoom,
+    goToChangeNameRoom,
+    isRightMenuOpen,
+    setIsRightMenuOpen
+  } = useRoomHook(id, roomName);
 
   return (
     <>
-      {isInvadeViewOpen && <InvadeView roomName={roomName} roomId={id} close={() => setIsInvadeViewOpen(false)} /> }
+      {isInvadeViewOpen && <InvadeView roomName={roomName} roomId={id} close={() => setIsInvadeViewOpen(false)} />}
+      {isRightMenuOpen && <RightRoomMenu menu={[{name: 'Change name', action: goToChangeNameRoom}, {name: 'Delete room', action: deleteRoom}]} close={() => setIsRightMenuOpen(false)}/>}
       <MainWrapper>
         <MenuWrapper>
           <BackArrowWrapper onClick={backToMessageView} to="/messagesChat">
@@ -53,7 +59,7 @@ const RoomPage = () => {
           </BackArrowWrapper>
           <RoomName>{roomName}</RoomName>
           <img src={addUser} style={{ width: '25px', margin: '0 20px 0 auto' }} onClick={() => setIsInvadeViewOpen(true)} data-testid="invade"/>
-          <MoreSvg style={{ width: '25px', transform: 'rotate(90deg)', margin: '0 10px 0 0'}} ref={iconMoreRef}/>
+          <MoreSvg style={{ width: '25px', transform: 'rotate(90deg)', margin: '0 10px 0 0'}} ref={iconMoreRef} onClick={() => setIsRightMenuOpen(true)}/>
         </MenuWrapper>
         <MessagesWrapper ref={messageWrapperRef}>
           {

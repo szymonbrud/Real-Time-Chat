@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import io from 'socket.io-client';
+import { useHistory } from 'react-router-dom'
 
 import useAuthentication from 'authentication/useAuthenticationHooks';
 
@@ -9,7 +10,9 @@ import getUrl from 'helpers/getUrl';
 const URL = getUrl();
 let socket : any;
 
-const useRoomHook = (roomId : string) => {
+const useRoomHook = (roomId : string, roomName: string) => {
+
+  const { goBack } = useHistory(); 
 
   const { userTokenId, userName, userId } = useAuthentication();
 
@@ -22,6 +25,7 @@ const useRoomHook = (roomId : string) => {
   const [isInputHasText, setIsInputHasText] = useState(false);
   const [isInvadeViewOpen, setIsInvadeViewOpen] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
+  const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
 
   const getMessages = () => {
     userTokenId((token: string) => {
@@ -122,6 +126,32 @@ const useRoomHook = (roomId : string) => {
     socket.emit('disconnectRoom', { lastRoomId: roomId });
   }
 
+  const deleteRoom = () => {
+    userTokenId((token: string) => {
+      fetch(`${URL}deleteRoom`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          roomId,
+        }),
+      })
+        .then(data => data.json())
+        .then(response => {
+          if (response.status === 'OK') {
+            backToMessageView();
+            goBack();
+          }
+        });
+    });
+  };
+
+  const goToChangeNameRoom = () => {
+    window.location.pathname = `newRoom/changeName/${roomId}/${roomName}`
+  }
+
   useEffect(() => {
     colorIcons();
     getMessages();
@@ -148,7 +178,11 @@ const useRoomHook = (roomId : string) => {
     isInvadeViewOpen,
     setIsInvadeViewOpen,
     messageWrapperRef,
-    isLoadingMessages
+    isLoadingMessages,
+    deleteRoom,
+    goToChangeNameRoom,
+    isRightMenuOpen,
+    setIsRightMenuOpen
   }
 };
 

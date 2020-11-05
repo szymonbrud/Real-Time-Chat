@@ -61,7 +61,7 @@ export const mainRouters = [
     isPrivate: true,
   },
   {
-    path: '/newRoom/:type',
+    path: '/newRoom/:type/:roomId?/:lastRoomName?',
     Component: CreateNewRoomPage,
     exact: false,
     isPrivate: true,

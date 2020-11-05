@@ -17,24 +17,27 @@ import {
 
 const CreateNewRoomPage = () => {
 
-  const { type }: { type: string } = useParams();
+  const { type, roomId, lastRoomName }: { type: string, roomId: string, lastRoomName: string } = useParams();
   const { goBack }: { goBack: Function } = useHistory();
 
-  const { checkInputText, inputRef, isButtonActive, createNewRoom } = useHooks(goBack);
+  const { checkInputText, inputRef, isButtonActive, createNewRoom, changeRoomName } = useHooks(goBack, roomId);
   
   return (
     <MainWrapper>
-      <BackArrowWrapper isMessage={type === 'message'} onClick={() => {
+      <BackArrowWrapper isMessage={type === 'message' || type === 'changeName'} onClick={() => {
         goBack()
       }}>
         <ArrowIcon src={smothArrowSvg} alt="back"/>
       </BackArrowWrapper>
       <RoomTypeNameTopText>
-        {`Create the ${type === 'message' ? 'message' : 'calling'} room`}
+        {
+          type === 'changeName' ? 'Change the room name' : `Create the ${type === 'message' ? 'message' : 'calling'} room`
+        }
+        
       </RoomTypeNameTopText>
       <Text>Wybierz nazwę dla swojego pokoju</Text>
-      <Input placeholder="Kings" ref={inputRef} onKeyDown={checkInputText}/>
-      <CreateButton isMessage={type === 'message'} isActive={isButtonActive} onClick={createNewRoom}>Stwórz</CreateButton>
+      <Input placeholder={lastRoomName || "Kings"} ref={inputRef} onKeyDown={checkInputText}/>
+      <CreateButton isMessage={type === 'message' || type === 'changeName'} isActive={isButtonActive} onClick={type === 'changeName' ? changeRoomName : createNewRoom}>{type === 'changeName' ? 'Zmień' : 'Stwórz'}</CreateButton>
     </MainWrapper>
   )
 };
