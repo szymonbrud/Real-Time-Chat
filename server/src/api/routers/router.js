@@ -196,7 +196,7 @@ router.post('/createInvade', [urlencodedParser, verifyUser], async (req, res) =>
   } else {
     const key = generateInvade(roomId, roomName, userId);
 
-    const link = `http://localhost:3000/join/${key}/${roomName}`;
+    const link = `http://localhost:3000/join/${key}/${roomName}/message`;
 
     const qrcode = await generateQrcodeByLink(link);
 

@@ -5,6 +5,7 @@ import LoginPage from 'pages/LoginPage';
 import RoomPage from 'pages/RoomPage';
 import JoinPage from 'pages/JoinPage';
 import CreateNewRoomPage from 'pages/CreateNewRoomPage';
+import VoiceChatRoomPage from 'pages/VoiceChatRoomPage';
 
 import { ReactComponent as Phone } from 'assets/icons/phone.svg';
 import { ReactComponent as More } from 'assets/icons/circles.svg';
@@ -55,7 +56,7 @@ export const mainRouters = [
     isPrivate: true,
   },
   {
-    path: '/join/:key/:roomName',
+    path: '/join/:key/:roomName/:type?',
     Component: JoinPage,
     exact: false,
     isPrivate: true,
@@ -63,6 +64,12 @@ export const mainRouters = [
   {
     path: '/newRoom/:type/:roomId?/:lastRoomName?',
     Component: CreateNewRoomPage,
+    exact: false,
+    isPrivate: true,
+  },
+  {
+    path: '/call/:roomId?/:roomName?',
+    Component: VoiceChatRoomPage,
     exact: false,
     isPrivate: true,
   },

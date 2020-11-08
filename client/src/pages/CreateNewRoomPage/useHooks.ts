@@ -66,12 +66,17 @@ const useHooks = (goBack : Function, roomId: string) => {
     });
   }
 
+  const redirectToCallingRoom = () => {
+    window.location.href = `/call/123/kubusie`;
+  }
+
   return {
     inputRef,
     isButtonActive,
     checkInputText,
     createNewRoom,
-    changeRoomName
+    changeRoomName,
+    redirectToCallingRoom
   }
 }
 

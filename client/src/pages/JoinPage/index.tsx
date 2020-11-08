@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 
-import authenticationHooks from 'authentication/useAuthenticationHooks';
+import {
+  BackButton,
+  JoinButton,
+  MainWrapper,
+  RoomNameWrapper,
+  Text,
+  MainButtonWrapper
+} from './styles';
+
+import useHooks from './useHooks';
 
 enum JoinStatus {
   wait,
@@ -10,60 +19,35 @@ enum JoinStatus {
 }
 
 const JoinPage = () => {
-  let { key, roomName } = useParams();
-  const { userTokenId } = authenticationHooks();
+  let { key, roomName, type }: { key: string, roomName: string, type: string } = useParams();
+  
+  const { join, status } = useHooks(key);
 
-  const [status, setStatus] = useState(JoinStatus.wait);
-
-  console.log(window.location.pathname);
-  console.log(useParams());
-
-  const sendJoinRequest = () => {
-    userTokenId((token: string) => {
-      fetch('http://localhost:5000/join', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token, key }),
-      })
-        .then(data => data.json())
-        .then(e => {
-          console.log(e);
-          if (e.status === 'OK') {
-            setStatus(JoinStatus.success);
-          } else {
-            setStatus(JoinStatus.error);
-          }
-        })
-        .catch(() => {
-          setStatus(JoinStatus.error);
-        });
-    });
-  };
-
-  const waitPage = (
-    <>
-      <p>Chcesz dołaczyć do pokoju: {roomName}</p>
-      <button onClick={sendJoinRequest} data-testid="yes">
-        TAK
-      </button>
-      <button data-testid="no">NIE</button>
-    </>
-  );
+  const mainPage = (
+    <MainWrapper>
+      <Text>{`Do u want to join to ${type === 'message' ? 'message chat.' : 'calling.'}`}</Text>
+      <RoomNameWrapper>{roomName}</RoomNameWrapper>
+      <MainButtonWrapper>
+        <BackButton to="/">back</BackButton>
+        <JoinButton isMessage={type === 'message'} onClick={join}>join</JoinButton>
+      </MainButtonWrapper>
+    </MainWrapper>
+  )
 
   const errorPage = (
-    <>
-      <p>niestety nie udało się dołączyć do pokoju, pamiętaj że zaproszenie jest jednozarowe.</p>
-      <button onClick={() => setStatus(JoinStatus.success)}>powrót</button>
-    </>
-  );
+    <MainWrapper>
+      <Text>Błąd podczas dołączania do pokoju, pamiętaj że tylko jedna osoba może dłączyć z jendego linku</Text>
+      <BackButton to="/">back</BackButton>
+    </MainWrapper>
+  )
+
+  const successPage = <Redirect to={`/room/${key}/${roomName}`}/>
 
   switch (status) {
     case JoinStatus.wait:
-      return waitPage;
+      return mainPage;
     case JoinStatus.success:
-      return <Redirect to={`/messagesChat`} />;
+      return successPage;
     case JoinStatus.error:
       return errorPage;
   }

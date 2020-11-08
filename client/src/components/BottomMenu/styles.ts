@@ -14,6 +14,7 @@ export const Wrapper = styled.div`
   bottom: 0;
   left: 0;
   border-radius: 17px 17px 0 0;
+  z-index: 1000;
 `;
 
 export const StyledLink = styled(Link)`

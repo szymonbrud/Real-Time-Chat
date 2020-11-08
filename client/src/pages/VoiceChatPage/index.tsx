@@ -1,12 +1,12 @@
 import React from 'react'
 
-import BottomMenu from 'components/BottomMenu'
+import CreateNewRoomPage from 'pages/CreateNewRoomPage';
 
 import { Wrapper } from './styles';
 
 const VoiceChat = () => (
   <Wrapper>
-    <h1>Voice Chat</h1>
+    <CreateNewRoomPage isThisCallingView={true}/>
   </Wrapper>
 )
 
