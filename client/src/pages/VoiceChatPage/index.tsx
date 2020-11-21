@@ -4,9 +4,10 @@ import CreateNewRoomPage from 'pages/CreateNewRoomPage';
 
 import { Wrapper } from './styles';
 
+
 const VoiceChat = () => (
   <Wrapper>
-    <CreateNewRoomPage isThisCallingView={true}/>
+    <CreateNewRoomPage isThisCallingView={true} />
   </Wrapper>
 )
 

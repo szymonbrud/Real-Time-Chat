@@ -53,7 +53,7 @@ export const JoinButton = styled.button`
   border-radius: 6px;
   width: 110px;
   height: 45px;
-  background: ${({ isMessage } : {isMessage: boolean}) => isMessage ? '#527BF3' : '#123'};
+  background: ${({ isMessage } : {isMessage: boolean}) => isMessage ? '#527BF3' : '#23B287'};
   color: white;
   font-size: 16px;
   font-family: ${({theme}) => theme.fonts.ropa};

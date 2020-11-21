@@ -66,8 +66,23 @@ const useHooks = (goBack : Function, roomId: string) => {
     });
   }
 
-  const redirectToCallingRoom = () => {
-    window.location.href = `/call/123/kubusie`;
+  const createCallingRoom = () => {
+    userTokenId((token: string) => {
+      fetch(`${URL}createVoiceChatRoom`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: token, roomName: inputRef.current.value }),
+      })
+        .then(data => data.json())
+        .then(response => {
+          window.location.href = `/call/${response.roomId}/${inputRef.current.value}`
+        })
+        .catch(error => { 
+          // TODO: error
+        });
+    });
   }
 
   return {
@@ -76,7 +91,7 @@ const useHooks = (goBack : Function, roomId: string) => {
     checkInputText,
     createNewRoom,
     changeRoomName,
-    redirectToCallingRoom
+    createCallingRoom
   }
 }
 

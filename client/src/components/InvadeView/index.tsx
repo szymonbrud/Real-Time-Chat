@@ -17,9 +17,9 @@ import {
   QrImage,
 } from './styled';
 
-const InvadeView = ({close, roomId, roomName} : { close: any, roomId: string, roomName: string }) => {
+const InvadeView = ({close, roomId, roomName, isCallRoom} : { close: any, roomId: string, roomName: string, isCallRoom?: boolean }) => {
 
-  const { animationCopyButton, copyButtonRef, image, invadeLink} = useHooks({roomId, roomName});
+  const { animationCopyButton, copyButtonRef, image, invadeLink} = useHooks({roomId, roomName, isCallRoom});
 
   return (
     <MainWrapper>

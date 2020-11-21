@@ -21,7 +21,7 @@ enum JoinStatus {
 const JoinPage = () => {
   let { key, roomName, type }: { key: string, roomName: string, type: string } = useParams();
   
-  const { join, status } = useHooks(key);
+  const { join, status, joinCalling } = useHooks(key);
 
   const mainPage = (
     <MainWrapper>
@@ -29,7 +29,7 @@ const JoinPage = () => {
       <RoomNameWrapper>{roomName}</RoomNameWrapper>
       <MainButtonWrapper>
         <BackButton to="/">back</BackButton>
-        <JoinButton isMessage={type === 'message'} onClick={join}>join</JoinButton>
+        <JoinButton isMessage={type === 'message'} onClick={type === 'message' ? join : joinCalling}>join</JoinButton>
       </MainButtonWrapper>
     </MainWrapper>
   )

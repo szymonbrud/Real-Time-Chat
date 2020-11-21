@@ -9,6 +9,7 @@ import {AllMessages, RoomsData} from 'databaseControll';
 import {getRoomsByUser} from 'api/responses';
 import {errorHandler} from 'api/responses';
 import generateQrcodeByLink from 'api/functions/generateQrcode';
+import {createNewVoiceChat, createInvadeVoiceChat, checkJoinToCall} from 'api/VoiceChat';
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -119,26 +120,57 @@ router.post('/rooms', [urlencodedParser, verifyUser], (req, res) => {
 
 router.post('/messages', [urlencodedParser, verifyUser], (req, res) => {
   const {roomId} = req.body;
-  AllMessages.find({roomId}, (err, messages) => {
-    if (err) {
-      errorHandler({req, errorCode: 501, errorDescription: 'Error during get messages', err});
-    }
+  const {userId} = req;
 
-    const messagesToSend = [];
+  RoomsData.findOne({userId}, (err, rooms) => {
+    if (rooms) {
+      const isHavePrmissionToGetMessages = rooms.rooms.find((room) => {
+        if (
+          new mongoose.Types.ObjectId(room.roomId).toHexString() ===
+          new mongoose.Types.ObjectId(roomId).toHexString()
+        ) {
+          return true;
+        }
+      });
 
-    messages.map(({date, _id, senderName, senderId, content, roomId}) => {
-      if (senderId === req.userId) {
-        messagesToSend.push({date, _id, senderName, content, roomId, isSendByMe: true});
+      if (isHavePrmissionToGetMessages) {
+        AllMessages.find({roomId}, (err, messages) => {
+          if (err) {
+            errorHandler({req, errorCode: 501, errorDescription: 'Error during get messages', err});
+          }
+
+          const messagesToSend = [];
+
+          messages.map(({date, _id, senderName, senderId, content, roomId}) => {
+            if (senderId === req.userId) {
+              messagesToSend.push({date, _id, senderName, content, roomId, isSendByMe: true});
+            } else {
+              messagesToSend.push({date, _id, senderName, content, roomId, isSendByMe: false});
+            }
+          });
+
+          res.setHeader('Content-Type', 'application/json');
+          res.send({status: 'OK', messages: messagesToSend});
+        })
+          .sort({date: 1})
+          .limit(30);
       } else {
-        messagesToSend.push({date, _id, senderName, content, roomId, isSendByMe: false});
+        errorHandler({
+          err: 'Have not premmsion',
+          res,
+          errorCode: 403,
+          errorDescription: 'Have not premmsion',
+        });
       }
-    });
-
-    res.setHeader('Content-Type', 'application/json');
-    res.send({status: 'OK', messages: messagesToSend});
-  })
-    .sort({date: 1})
-    .limit(30);
+    } else {
+      errorHandler({
+        err: 'Have not premmsion',
+        res,
+        errorCode: 403,
+        errorDescription: 'Have not premmsion',
+      });
+    }
+  });
 });
 
 router.post('/createRoom', [urlencodedParser, verifyUser], (req, res) => {
@@ -319,6 +351,35 @@ router.put('/editNameRoom', [urlencodedParser, verifyUser], (req, res) => {
     );
   } else {
     errorHandler({res, errorCode: 400, errorDescription: 'Incomplete data'});
+  }
+});
+
+router.post('/createVoiceChatRoom', [urlencodedParser, verifyUser], (req, res) => {
+  const {userId} = req;
+
+  const voiceChatId = createNewVoiceChat(userId);
+  res.setHeader('Content-Type', 'application/json');
+  res.send({status: 'OK', roomId: voiceChatId});
+});
+
+router.post('/createInvadeCall', [urlencodedParser, verifyUser], (req, res) => {
+  const {userId} = req;
+  const {roomId, roomName} = req.body;
+
+  createInvadeVoiceChat(roomId, roomName, userId, res);
+});
+
+router.post('/joinCall', [urlencodedParser, verifyUser], (req, res) => {
+  const {userId} = req;
+  const {key} = req.body;
+
+  const roomData = checkJoinToCall(key, userId);
+
+  if (roomData) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send({status: 'OK', roomId: roomData.roomId, roomName: roomData.roomName});
+  } else {
+    errorHandler({res, errorDescription: 'Bad data', errorCode: 400});
   }
 });
 

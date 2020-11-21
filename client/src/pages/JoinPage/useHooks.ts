@@ -40,9 +40,33 @@ const useHooks = (key: string) => {
     });
   }
 
+  const joinCalling = () => {
+     userTokenId((token: string) => {
+      fetch(`${URL}joinCall`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token, key }),
+      })
+        .then(data => data.json())
+        .then(response => {
+          if (response.status === 'OK') {
+            window.location.href = `/call/${response.roomId}/${response.roomName}`;
+          } else {
+            setStatus(JoinStatus.error);
+          }
+        })
+        .catch((err) => {
+          setStatus(JoinStatus.error);
+        });
+    });
+  }
+
   return {
     join,
     status,
+    joinCalling
   }
 };
 

@@ -1,16 +1,16 @@
 import {createUser, getUser, removeUser, leaveFromRoom, users} from './users';
 import {saveMessageDatabase} from 'databaseControll';
+import {joinToVoiceChat} from 'api/VoiceChat';
 
 const peers = [];
+
+const isActive = true;
 
 export const mainSocket = (io) =>
   io.on('connect', (socket) => {
     // MESSAGE CHAT
 
     socket.on('join', ({name, roomId, userId}, callback) => {
-      console.log('here');
-      console.log(userId);
-
       if (name.length === 0 && roomId.length === 0) {
         console.error('Invalid data');
         return callback('error');
@@ -33,8 +33,6 @@ export const mainSocket = (io) =>
 
         callback();
       }
-
-      console.log(users);
     });
 
     socket.on('disconnectRoom', ({lastRoomId}) => {
@@ -44,7 +42,6 @@ export const mainSocket = (io) =>
 
     socket.on('sendMessage', ({text}, callback) => {
       const {room, username, userId, err} = getUser(socket.id);
-      console.log(users);
 
       if (err) {
         console.error('Error during send the message');
@@ -68,28 +65,33 @@ export const mainSocket = (io) =>
 
     // VOICE CHAT
 
-    socket.on('joinVoiceChat', ({roomId, roomName}) => {
-      const findUser = peers.find((user) => user.socket.id === socket.id);
+    socket.on('joinVoiceChat', ({roomId, name, userId}, callback) => {
+      if (joinToVoiceChat(userId, roomId)) {
+        const findUser = peers.find((user) => user.socket.id === socket.id);
 
-      if (!findUser) {
-        console.log('user did not find');
-        peers.push({socket: socket, roomName, roomId});
-      } else {
-        console.log('user found');
-      }
-
-      peers.forEach((peer) => {
-        console.log('1');
-        console.log(peer.socket.id);
-        console.log('2');
-        console.log(socket.id);
-
-        if (peer.socket.id !== socket.id && peer.roomId === roomId) {
-          console.log('run emit');
-          console.log(peer.roomId);
-          peer.socket.emit('initReceive', socket.id);
+        if (!findUser) {
+          console.log('user did not find');
+          peers.push({socket: socket, name, roomId});
+        } else {
+          console.log('user found');
         }
-      });
+
+        peers.forEach((peer) => {
+          console.log('1');
+          console.log(peer.socket.id);
+          console.log('2');
+          console.log(socket.id);
+
+          if (peer.socket.id !== socket.id && peer.roomId === roomId) {
+            console.log('run emit');
+            console.log(peer.roomId);
+            peer.socket.emit('initReceive', {socket_id: socket.id, name});
+          }
+        });
+        callback({success: true});
+      } else {
+        callback({success: false, desc: 'U have not premssion to join :('});
+      }
     });
 
     socket.on('signal', (data) => {
@@ -99,19 +101,20 @@ export const mainSocket = (io) =>
         findUser.socket.emit('signal', {
           socket_id: socket.id,
           signal: data.signal,
+          userName: findUser.name,
         });
       } else {
         return;
       }
     });
 
-    socket.on('disconnect', () => {
+    socket.on('disconnectVoice', () => {
       socket.broadcast.emit('removePeer', socket.id);
       delete peers[socket.id];
     });
 
-    socket.on('initSend', (initSocketId) => {
-      const findUser = peers.find((user) => user.socket.id === initSocketId);
-      findUser.socket.emit('initSend', socket.id);
+    socket.on('initSend', ({socket_id, name}) => {
+      const findUser = peers.find((user) => user.socket.id === socket_id);
+      findUser.socket.emit('initSend', {socket_id: socket.id, userName: name});
     });
   });

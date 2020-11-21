@@ -39,7 +39,8 @@
     "mongodb": "^3.5.9",
     "mongoose": "^5.9.24",
     "socket.io": "^2.3.0",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "uuid": "^8.3.1"
   },
   "husky": {
     "hooks": {

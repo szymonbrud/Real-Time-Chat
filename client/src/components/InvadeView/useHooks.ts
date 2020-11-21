@@ -11,7 +11,7 @@ if (window.location.hostname === 'localhost') {
   URL = 'https://real-time-chat-backend.herokuapp.com/';
 }
 
-const useHooks = ({ roomName, roomId }: { roomName: string, roomId: string }) => {
+const useHooks = ({ roomName, roomId, isCallRoom }: { roomName: string, roomId: string, isCallRoom?: boolean}) => {
   
   const { userTokenId } = useAuthentication();
 
@@ -72,8 +72,36 @@ const useHooks = ({ roomName, roomId }: { roomName: string, roomId: string }) =>
     });
   }
 
+  const getInvadeCallRoom = () => {
+    userTokenId((token: string) => {
+      fetch(`${URL}createInvadeCall`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          roomId: roomId,
+          roomName: roomName,
+        }),
+      })
+        .then(data => data.json())
+        .then(invadeData => {
+          setImage(invadeData.image);
+          setInvadeLink(invadeData.link);
+        })
+        .catch(error => {
+          // TODO: handle this error
+        });
+    });
+  }
+
   useEffect(() => {
-    getInvade();
+    if (isCallRoom) {
+      getInvadeCallRoom();
+    } else {
+      getInvade();
+    }
   })
 
   return {

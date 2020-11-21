@@ -43,6 +43,7 @@ const useRoomHook = (roomId : string, roomName: string) => {
           })
           .catch(error => { 
             //TODO: error
+            window.location.href = '/';
           });
       });
   }

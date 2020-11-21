@@ -20,7 +20,7 @@ const CreateNewRoomPage = ({isThisCallingView} : {isThisCallingView?: boolean}) 
   const { type, roomId, lastRoomName }: { type: string, roomId: string, lastRoomName: string } = useParams();
   const { goBack }: { goBack: Function } = useHistory();
 
-  const { checkInputText, inputRef, isButtonActive, createNewRoom, changeRoomName, redirectToCallingRoom } = useHooks(goBack, roomId);
+  const { checkInputText, inputRef, isButtonActive, createNewRoom, changeRoomName, createCallingRoom } = useHooks(goBack, roomId);
   
   return (
     <MainWrapper>
@@ -40,7 +40,7 @@ const CreateNewRoomPage = ({isThisCallingView} : {isThisCallingView?: boolean}) 
       </RoomTypeNameTopText>
       <Text>Wybierz nazwę dla swojego pokoju</Text>
       <Input placeholder={lastRoomName || "Kings"} ref={inputRef} onKeyDown={checkInputText}/>
-      <CreateButton isMessage={type === 'message' || type === 'changeName'} isActive={isButtonActive} onClick={isThisCallingView ? redirectToCallingRoom : type === 'changeName' ? changeRoomName : createNewRoom}>{type === 'changeName' ? 'Zmień' : 'Stwórz'}</CreateButton>
+      <CreateButton isMessage={type === 'message' || type === 'changeName'} isActive={isButtonActive} onClick={isThisCallingView ? createCallingRoom : type === 'changeName' ? changeRoomName : createNewRoom}>{type === 'changeName' ? 'Zmień' : 'Stwórz'}</CreateButton>
     </MainWrapper>
   )
 };
