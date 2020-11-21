@@ -41,17 +41,5 @@
     "socket.io": "^2.3.0",
     "supertest": "^4.0.2",
     "uuid": "^8.3.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn test:nw && lint-staged",
-      "pre-push": "yarn test:nw && lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx}": [
-      "eslint . --fix",
-      "git add ."
-    ]
   }
 }
