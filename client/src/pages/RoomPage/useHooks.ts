@@ -155,11 +155,14 @@ const useRoomHook = (roomId : string, roomName: string) => {
 
   useEffect(() => {
     colorIcons();
-    getMessages();
+    getMessages(); 
+    // eslint-disable-next-line
   }, [])
 
+  // eslint-disable-next-line
   useEffect(() => {
     joinSocketRoom();
+    // eslint-disable-next-line
   }, [userId])
 
   useEffect(() => {

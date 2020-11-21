@@ -1,6 +1,9 @@
 const express = require('express');
 const router = new express.Router();
 
+import {env} from 'process';
+require('dotenv').config();
+
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
@@ -119,8 +122,12 @@ router.post('/rooms', [urlencodedParser, verifyUser], (req, res) => {
 });
 
 router.post('/messages', [urlencodedParser, verifyUser], (req, res) => {
+  console.log('messages is active');
   const {roomId} = req.body;
   const {userId} = req;
+
+  console.log(roomId);
+  console.log(userId);
 
   RoomsData.findOne({userId}, (err, rooms) => {
     if (rooms) {
@@ -228,7 +235,7 @@ router.post('/createInvade', [urlencodedParser, verifyUser], async (req, res) =>
   } else {
     const key = generateInvade(roomId, roomName, userId);
 
-    const link = `http://localhost:3000/join/${key}/${roomName}/message`;
+    const link = `${env.FRONTEND_URL}join/${key}/${roomName}/message`;
 
     const qrcode = await generateQrcodeByLink(link);
 
@@ -273,8 +280,9 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
             errorHandler({err, res, errorCode: 500, errorDescription: 'Database error'});
           }
 
+          console.log('wszysko git');
           res.setHeader('Content-Type', 'application/json');
-          res.send({status: 'OK'});
+          res.send({status: 'OK', roomId: roomData.roomId});
         });
       } else {
         const findIsRoomExist = rooms[0].rooms.find(
@@ -299,8 +307,9 @@ router.post('/join', [urlencodedParser, verifyUser], (req, res) => {
               }
 
               if (updateResponse.ok) {
+                console.log('wszysko git');
                 res.setHeader('Content-Type', 'application/json');
-                res.send({status: 'OK'});
+                res.send({status: 'OK', roomId: roomData.roomId});
               }
             },
           );

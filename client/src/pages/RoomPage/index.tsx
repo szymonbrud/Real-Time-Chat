@@ -58,7 +58,7 @@ const RoomPage = () => {
             <BackArrow src={smothArrowSvg} alt="back" />
           </BackArrowWrapper>
           <RoomName>{roomName}</RoomName>
-          <img src={addUser} style={{ width: '25px', margin: '0 20px 0 auto' }} onClick={() => setIsInvadeViewOpen(true)} data-testid="invade"/>
+          <img src={addUser} style={{ width: '25px', margin: '0 20px 0 auto' }} onClick={() => setIsInvadeViewOpen(true)} data-testid="invade" alt="add user"/>
           <MoreSvg style={{ width: '25px', transform: 'rotate(90deg)', margin: '0 10px 0 0'}} ref={iconMoreRef} onClick={() => setIsRightMenuOpen(true)}/>
         </MenuWrapper>
         <MessagesWrapper ref={messageWrapperRef}>

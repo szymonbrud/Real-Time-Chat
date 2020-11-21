@@ -55,12 +55,12 @@ export const mainRouters = [
     exact: false,
     isPrivate: true,
   },
-  {
-    path: '/join/:key/:roomName/:type?',
-    Component: JoinPage,
-    exact: false,
-    isPrivate: true,
-  },
+  // {
+  //   path: '/join/:key/:roomName/:type?',
+  //   Component: JoinPage,
+  //   exact: false,
+  //   isPrivate: true,
+  // },
   {
     path: '/newRoom/:type/:roomId?/:lastRoomName?',
     Component: CreateNewRoomPage,

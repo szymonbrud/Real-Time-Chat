@@ -12,7 +12,6 @@ import microphoneSvg from 'assets/icons/microphone.svg';
 import InvadeView from 'components/InvadeView';
 
 import {
-  IncommingVideo,
   MyVideo,
   MainWrapper,
   InvadeWrapper,
@@ -29,16 +28,11 @@ const VoiceChatRoomPage = () => {
   const { roomId, roomName } : {roomId: string, roomName: string} = useParams();
 
   const {
-    isVideoChatOpen,
-    joinToVoiceChatRoom,
-    number,
-    videoIncommingRef,
     videoRef,
     videos,
     isInvadeViewOpen,
     setIsInvadeViewOpen,
     isCammeraRecord,
-    setIsCammeraRecord,
     disconnectMedia,
     micOrCamSwitch,
     isMicrophoneRecord

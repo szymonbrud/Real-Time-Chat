@@ -1,7 +1,5 @@
 import styled, {css} from 'styled-components'
 import { Link } from 'react-router-dom';
-import { AnyARecord } from 'dns';
-
 
 export const Wrapper = styled.div`
   width: 100%;

@@ -14,6 +14,8 @@ const mainRoute = new express.Router();
 
 let databaseName = '';
 
+console.log(process.env.NODE_ENV);
+
 if (env.NODE_ENV === 'test') {
   databaseName = 'realtimechat_test';
 } else if (env.npm_lifecycle_event === 'test:cy') {
@@ -30,13 +32,11 @@ if (
 ) {
   mongoose.connect(`mongodb://localhost/${databaseName}`, {
     useNewUrlParser: true,
-
     useUnifiedTopology: true,
   });
 } else if (process.env.NODE_ENV === 'production') {
   mongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
-
     useUnifiedTopology: true,
   });
 }
@@ -58,12 +58,13 @@ mainSocket(io);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-const whitelist = [process.env.BACKEND_URL];
+const whitelist = ['https://testmakemorefocus.web.app'];
 
 const corsOptions = {
   credentials: true,
   origin: (origin, callback) => {
     if (whitelist.includes(origin)) {
+      console.log('this orgin is correct');
       return callback(null, true);
     }
 
@@ -72,6 +73,7 @@ const corsOptions = {
 };
 
 if (process.env.NODE_ENV === 'production') {
+  console.log('production orgin');
   app.use(cors(corsOptions));
 } else {
   app.use(cors());

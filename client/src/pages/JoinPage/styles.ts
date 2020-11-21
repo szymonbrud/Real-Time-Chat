@@ -6,6 +6,8 @@ export const MainWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: 0 35px;
+  background: #EEEEF2;
+  z-index: 1000;
   position: fixed;
   top: 0;
   left: 0;

@@ -5,8 +5,6 @@ import io from 'socket.io-client';
 import useAuthentication from 'authentication/useAuthenticationHooks';
 
 import getUrl from 'helpers/getUrl';
-import { setMaxListeners } from 'process';
-import { any } from 'cypress/types/bluebird';
 
 const URL = getUrl();
 let socket: any;
@@ -25,13 +23,12 @@ const useVoiceChatHooks = (roomId: string) => {
 
   const videos: RefObject<HTMLDivElement> = useRef(null);
 
-  const [isVideoChatOpen, setIsVideoChatOpen] = useState(false);
-  const [number, setNumber] = useState(1);
   const [isInvadeViewOpen, setIsInvadeViewOpen] = useState(false);
 
   const [isCammeraRecord, setIsCammeraRecord] = useState(false);
   const [isMicrophoneRecord, setIsMicrophoneRecord] = useState(false);
 
+  // eslint-disable-next-line
   const [peers, setPeers]: any = useState({});
 
   const gettingMedia = async (options: { video: boolean, audio: boolean }) => {
@@ -182,6 +179,7 @@ const useVoiceChatHooks = (roomId: string) => {
       });
   };
 
+  // eslint-disable-next-line
   useEffect(() => {
     if (userId) {
       socket = io(URL);
@@ -197,14 +195,13 @@ const useVoiceChatHooks = (roomId: string) => {
         }
       }
     }
+    // eslint-disable-next-line
   }, [userId, stream]);
 
   return {
     joinToVoiceChatRoom,
-    isVideoChatOpen,
     videoRef,
     videoIncommingRef,
-    number,
     videos,
     setIsInvadeViewOpen,
     isInvadeViewOpen,

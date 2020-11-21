@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'; 
+import { useState, useRef } from 'react'; 
 
 import useAuthenticationHooks from 'authentication/useAuthenticationHooks';
 import getUrl from 'helpers/getUrl';
@@ -8,6 +8,7 @@ const URL = getUrl();
 const useHooks = (goBack : Function, roomId: string) => {
 
   const [isButtonActive, setIsButtonActive] = useState(false);
+  const [isRedirectRoomToCallingView, setIsRedirectRoomToCallingView] = useState('');
 
   const inputRef = useRef<any>(null);
 
@@ -77,7 +78,8 @@ const useHooks = (goBack : Function, roomId: string) => {
       })
         .then(data => data.json())
         .then(response => {
-          window.location.href = `/call/${response.roomId}/${inputRef.current.value}`
+          setIsRedirectRoomToCallingView(`/call/${response.roomId}/${inputRef.current.value}`);
+          // window.location.href = 
         })
         .catch(error => { 
           // TODO: error
@@ -91,7 +93,8 @@ const useHooks = (goBack : Function, roomId: string) => {
     checkInputText,
     createNewRoom,
     changeRoomName,
-    createCallingRoom
+    createCallingRoom,
+    isRedirectRoomToCallingView
   }
 }
 

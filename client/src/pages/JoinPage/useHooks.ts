@@ -12,10 +12,11 @@ enum JoinStatus {
 const URL = getUrl();
 
 const useHooks = (key: string) => {
-
   const { userTokenId } = authenticationHooks();
 
   const [status, setStatus] = useState(JoinStatus.wait);
+  const [redirectToCallingRoom, setRedirectToCallingRoom] = useState('');
+  const [roomId, setRoomId] = useState('');
 
   const join = () => {
     userTokenId((token: string) => {
@@ -29,6 +30,7 @@ const useHooks = (key: string) => {
         .then(data => data.json())
         .then(response => {
           if (response.status === 'OK') {
+            setRoomId(response.roomId);
             setStatus(JoinStatus.success);
           } else {
             setStatus(JoinStatus.error);
@@ -52,7 +54,7 @@ const useHooks = (key: string) => {
         .then(data => data.json())
         .then(response => {
           if (response.status === 'OK') {
-            window.location.href = `/call/${response.roomId}/${response.roomName}`;
+            setRedirectToCallingRoom(`/call/${response.roomId}/${response.roomName}`)
           } else {
             setStatus(JoinStatus.error);
           }
@@ -66,7 +68,9 @@ const useHooks = (key: string) => {
   return {
     join,
     status,
-    joinCalling
+    joinCalling,
+    redirectToCallingRoom,
+    roomId
   }
 };
 

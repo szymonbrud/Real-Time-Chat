@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 
 import {
@@ -21,7 +21,11 @@ enum JoinStatus {
 const JoinPage = () => {
   let { key, roomName, type }: { key: string, roomName: string, type: string } = useParams();
   
-  const { join, status, joinCalling } = useHooks(key);
+  const { join, status, joinCalling, redirectToCallingRoom, roomId } = useHooks(key);
+
+  if (redirectToCallingRoom.length > 0) {
+    return <Redirect to={redirectToCallingRoom}/>
+  }
 
   const mainPage = (
     <MainWrapper>
@@ -41,7 +45,7 @@ const JoinPage = () => {
     </MainWrapper>
   )
 
-  const successPage = <Redirect to={`/room/${key}/${roomName}`}/>
+  const successPage = <Redirect to={`/#/room/${roomId}/${roomName}`} />
 
   switch (status) {
     case JoinStatus.wait:

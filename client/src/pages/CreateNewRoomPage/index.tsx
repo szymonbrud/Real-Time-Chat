@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useHistory } from 'react-router-dom'; 
+import { useParams, useHistory, Redirect } from 'react-router-dom'; 
 
 import smothArrowSvg from 'assets/icons/smoth_arrow.svg';
 
@@ -18,10 +18,14 @@ import {
 const CreateNewRoomPage = ({isThisCallingView} : {isThisCallingView?: boolean}) => {
 
   const { type, roomId, lastRoomName }: { type: string, roomId: string, lastRoomName: string } = useParams();
-  const { goBack }: { goBack: Function } = useHistory();
+  const { goBack, go }: { goBack: Function, go: Function } = useHistory();
 
-  const { checkInputText, inputRef, isButtonActive, createNewRoom, changeRoomName, createCallingRoom } = useHooks(goBack, roomId);
+  const { checkInputText, inputRef, isButtonActive, createNewRoom, changeRoomName, createCallingRoom, isRedirectRoomToCallingView } = useHooks(goBack, roomId);
   
+  if (isRedirectRoomToCallingView.length > 0) {
+    return <Redirect to={isRedirectRoomToCallingView}/>
+  }
+
   return (
     <MainWrapper>
       {

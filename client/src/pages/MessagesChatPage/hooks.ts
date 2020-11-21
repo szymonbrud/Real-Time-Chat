@@ -48,6 +48,7 @@ const useMessagesHooks = () => {
 
   useEffect(() => {
     getRooms();
+    // eslint-disable-next-line
   }, [setMessagesView])
 
   return {

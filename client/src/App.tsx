@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, BrowserRouter } from 'react-router-dom';
 
 import './styles.css';
 
@@ -11,12 +11,18 @@ import BottomMenu from 'components/BottomMenu'
 
 import { bottomMenuRouters, mainRouters } from 'Routers'
 
+import JoinPage from 'pages/JoinPage';
+
+
+const TestComponent = () => <h1>Hello it's me</h1>
+
 const App = () => {
   return (
     <GlobalStyleProvider>
       <ViewContextProvider>
         <Router>
           <Switch>
+            <Route component={TestComponent} path="/test"/>
             {
               mainRouters.map(({ isPrivate, Component, exact, path }: { isPrivate: boolean, path: string, Component: any, exact: boolean }) => {
                 if (isPrivate) {
@@ -25,7 +31,7 @@ const App = () => {
                 return <CheckRoute path={path} component={Component} exact={exact} key={path}/>
               })
             }
-            <PrivateRoute>
+            <Route>
               <BottomMenu/>
               {
                 bottomMenuRouters.map(({ isPrivate, path, Component, exact }:
@@ -36,9 +42,12 @@ const App = () => {
                     return <Route path={path} component={Component} exact={exact} key={path}/>
                   })
                 }
-            </PrivateRoute>            
+            </Route>            
           </Switch>
         </Router>
+        <BrowserRouter>
+          <PrivateRoute path="/join/:key/:roomName/:type?" component={JoinPage} exact={true} />
+        </BrowserRouter>
       </ViewContextProvider>
     </GlobalStyleProvider>
   );

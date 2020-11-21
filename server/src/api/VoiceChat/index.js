@@ -1,5 +1,8 @@
 import {v4 as uuid4} from 'uuid';
 
+import {env} from 'process';
+require('dotenv').config();
+
 import generateQrcodeByLink from 'api/functions/generateQrcode';
 
 export const voiceChats = [];
@@ -51,7 +54,9 @@ export const createNewVoiceChat = (userId) => {
 export const createInvadeVoiceChat = async (roomId, roomName, userId, res) => {
   const key = generateInvade(roomId, roomName, userId);
 
-  const link = `http://localhost:3000/join/${key}/${roomName}/call`;
+  const link = `${env.FRONTEND_URL}join/${key}/${roomName}/call`;
+
+  console.log(link);
 
   try {
     const qrcode = await generateQrcodeByLink(link);

@@ -27,7 +27,7 @@ const BottomMenuHooks = () => {
       animationMore
     ]
 
-    const location = window.location.pathname;
+    const location = window.location.hash.substring(1);
 
     bottomMenuRouters.forEach((router, routerIndex) => {
       if (router.path === location) {
@@ -37,7 +37,6 @@ const BottomMenuHooks = () => {
         animationFunctions[routerIndex](false)
       }
     })
-
   }, [])
 
   const switchPage = (toPage: number) => {
@@ -180,3 +179,5 @@ const BottomMenuHooks = () => {
 };
 
 export default BottomMenuHooks;
+
+// DZIAŁAJĄCE QR CODE

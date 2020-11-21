@@ -8,19 +8,5 @@
   "devDependencies": {
     "husky": "^4.3.0",
     "lint-staged": "^10.4.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "cd server && lint-staged",
-      "pre-push": "cd server && yarn test:nw && lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx}": [
-      "cd server",
-      "eslint . --fix",
-      "cd ..",
-      "git add ."
-    ]
   }
 }
