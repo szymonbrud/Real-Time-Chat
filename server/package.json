@@ -17,7 +17,7 @@
     "@babel/register": "^7.10.3",
     "babel-jest": "^26.0.1",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "socket.io": "^2.3.0"
   }
 }
